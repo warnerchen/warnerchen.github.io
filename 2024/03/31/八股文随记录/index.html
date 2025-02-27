@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>八股文随记录 - Warner&#039;s Wiki</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Warner&#039;s Wiki"><meta name="msapplication-TileImage" content="/logo.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Warner&#039;s Wiki"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、网络方面1.1 OSI七层体系模型和TCP&amp;#x2F;IP四层体系模型"><meta property="og:type" content="blog"><meta property="og:title" content="八股文随记录"><meta property="og:url" content="https://warnerchen.github.io/2024/03/31/%E5%85%AB%E8%82%A1%E6%96%87%E9%9A%8F%E8%AE%B0%E5%BD%95/"><meta property="og:site_name" content="Warner&#039;s Wiki"><meta property="og:description" content="一、网络方面1.1 OSI七层体系模型和TCP&amp;#x2F;IP四层体系模型"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://warnerchen.github.io/img/og_image.png"><meta property="article:published_time" content="2024-03-31T09:04:31.000Z"><meta property="article:modified_time" content="2025-02-26T23:37:00.000Z"><meta property="article:author" content="Warner Chen"><meta property="article:tag" content="面试"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://warnerchen.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://warnerchen.github.io/2024/03/31/%E5%85%AB%E8%82%A1%E6%96%87%E9%9A%8F%E8%AE%B0%E5%BD%95/"},"headline":"八股文随记录","image":["https://warnerchen.github.io/img/og_image.png"],"datePublished":"2024-03-31T09:04:31.000Z","dateModified":"2025-02-26T23:37:00.000Z","author":{"@type":"Person","name":"Warner Chen"},"publisher":{"@type":"Organization","name":"Warner's Wiki","logo":{"@type":"ImageObject","url":"https://warnerchen.github.io/logo.jpg"}},"description":"一、网络方面1.1 OSI七层体系模型和TCP&#x2F;IP四层体系模型"}</script><link rel="canonical" href="https://warnerchen.github.io/2024/03/31/%E5%85%AB%E8%82%A1%E6%96%87%E9%9A%8F%E8%AE%B0%E5%BD%95/"><link rel="icon" href="/logo.jpg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2024-03-31T09:04:31.000Z" title="31/03/2024, 5:04:31 pm">2024-03-31</time></span><span class="level-item">Updated&nbsp;<time dateTime="2025-02-26T23:37:00.000Z" title="27/02/2025, 7:37:00 am">2025-02-27</time></span><span class="level-item">an hour read (About 9773 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">八股文随记录</h1><div class="content"><h2 id="一、网络方面"><a href="#一、网络方面" class="headerlink" title="一、网络方面"></a>一、网络方面</h2><h3 id="1-1-OSI七层体系模型和TCP-IP四层体系模型"><a href="#1-1-OSI七层体系模型和TCP-IP四层体系模型" class="headerlink" title="1.1 OSI七层体系模型和TCP&#x2F;IP四层体系模型"></a>1.1 OSI七层体系模型和TCP&#x2F;IP四层体系模型</h3><span id="more"></span>
+
+<ol>
+<li>OSI七层：<ul>
+<li>物理层</li>
+<li>数据链路层</li>
+<li>网络层</li>
+<li>传输层</li>
+<li>会话层</li>
+<li>表示层</li>
+<li>应用层</li>
+</ul>
+</li>
+<li>TCP&#x2F;IP四层：<ul>
+<li>网络接口层</li>
+<li>网际层IP</li>
+<li>传输层</li>
+<li>应用层</li>
+</ul>
+</li>
+<li>基本五层体系模型：<ul>
+<li>物理层：IEEE802.3</li>
+<li>数据链路层：PPP、Ethernet</li>
+<li>网络层：ARP、RARP、IP、ICMP、RIP、OSPF、BGP</li>
+<li>传输层：TCP、UDP</li>
+<li>应用层：HTTP、DNS、FTP、TELNET、SMTP、NFS、SNMP</li>
+</ul>
+</li>
+</ol>
+<h3 id="1-2-物理层"><a href="#1-2-物理层" class="headerlink" title="1.2 物理层"></a>1.2 物理层</h3><h3 id="1-3-数据链路层"><a href="#1-3-数据链路层" class="headerlink" title="1.3 数据链路层"></a>1.3 数据链路层</h3><h4 id="1-3-1-PPP"><a href="#1-3-1-PPP" class="headerlink" title="1.3.1 PPP"></a>1.3.1 PPP</h4><p>PPP协议即点对点协议，属于数据链路层协议，一般用于广域网。PPP协议首先会建立物理链路，当物理链路建立成功，就通过链路控制协议LCP来建立数据链路连接，接着网络控制协议NCP就会协商该链路上所传输的数据包格式和类型，从而建立不同的网络层协议。</p>
+<h4 id="1-3-2-CSMA-CD"><a href="#1-3-2-CSMA-CD" class="headerlink" title="1.3.2 CSMA&#x2F;CD"></a>1.3.2 CSMA&#x2F;CD</h4><p>CSMA&#x2F;CD协议即载波监听多点接入&#x2F;碰撞检测协议，属于数据链路层协议。工作原理是发送数据之前会先侦听信道是否空闲，如果空闲就发送数据，如果忙碌就等待一段时间再发送，即载波监听；当上一段信息发送完后，发生了两个或两个以上的节点同时发送数据，那就判定为冲突，会立即停止发送，等待一段时间再发送数据，即碰撞检测。节点在发送过程中也会监听信道。所以CSMA&#x2F;CD的工作原理可以概括为：先听后发、边发边听、冲突停发、随机延迟后重发。</p>
+<h4 id="1-3-2-划分vlan有何用"><a href="#1-3-2-划分vlan有何用" class="headerlink" title="1.3.2 划分vlan有何用"></a>1.3.2 划分vlan有何用</h4><p>vlan 即虚拟局域网，就是把一个大的局域网，划分为多个相互隔离的小局域网，用于划分数据链路层，可以实现隔离广播域，避免每个节点收到太多无用的广播包，减小节点性能和网络宽带的消耗，同时可以隔离常见的攻击，如 arp 攻击，受到攻击的影响范围仅限于该 vlan。</p>
+<h3 id="1-4-网络层"><a href="#1-4-网络层" class="headerlink" title="1.4 网络层"></a>1.4 网络层</h3><h4 id="1-4-1-ARP"><a href="#1-4-1-ARP" class="headerlink" title="1.4.1 ARP"></a>1.4.1 ARP</h4><p>地址解析协议ARP，是根据IP地址来获取物理地址的协议，工作在数据链路层，源主机发送信息时会将目标地址主机的IP地址通过广播的形式发送到局域网内的所有主机上，目标地址主机收到广播后就会将自己的MAC地址发送给源主机，这样源主机就会将目标地址主机的IP地址和MAC地址保存在ARP缓存中，从而节约网络资源。</p>
+<h4 id="1-4-2-RIP"><a href="#1-4-2-RIP" class="headerlink" title="1.4.2 RIP"></a>1.4.2 RIP</h4><p>RIP是采用距离向量的路由选择协议，属于内部网关协议，使用 “跳数” 来衡量到达目标地址的路由距离。距离的取值为0 - 16，16即为不可达。RIP协议仅和相邻路由器交换信息，交换的信息是自己的路由表，每30秒就会交换一次，如果超过180秒没收到相邻路由器发送过来的信息，则视为不可达。</p>
+<h4 id="1-4-3-OSPF"><a href="#1-4-3-OSPF" class="headerlink" title="1.4.3 OSPF"></a>1.4.3 OSPF</h4><p>OSPF即开放最短路径优先，属于内部网关协议，是采用洪泛法向自治系统内的所有路由器发送信息，每一个相邻路由器会将此消息再次发送给相邻的路由器，交换的信息是与本路由器相邻的所有路由器的链路状态，链路状态可以是费用、距离、时延、带宽等，只有当链路状态发生变化时，路由器才会向所有路由器采用洪泛法发送消息。</p>
+<p>OSPF工作状态：</p>
+<ol>
+<li>发现邻居：通过发送hello包来发现邻居</li>
+<li>建立邻居关系：选举DR&#x2F;BDR来建立关系，其它路由仅与DR和BDR建立关系，DR挂了还有BDR在所以不怕链路发生断联的状况</li>
+<li>更新链路状态：每个路由去都有个LSDB（链路状态数据库），里面存放LSA（链路状态公告），如果网络状态没发生变化，就每隔30分钟与邻居更新链路状态信息，如果发生变化则自动更新链路状态信息</li>
+<li>路由计算：根据LSDB中的LSA计算最优路径</li>
+</ol>
+<p>OSPF的五种包类型：</p>
+<ol>
+<li>发现邻居：通过发送hello包来发现邻居，以及用来选举DR&#x2F;BDR</li>
+<li>数据库描述：用在LSDB交换过程中，确立主&#x2F;从关系，交换LSA包头，以及确定首个序列号</li>
+<li>链路状态请求：请求LSDB交换过程中本路由器没有的LSA</li>
+<li>链路状态更新：通过泛洪法更新LSA</li>
+<li>链路状态确认：对收到的链路状态更新进行确认， 如果发送确认的路由器的状态是DR或者BDR，确认数据包发送到OSPF的组播地址224.0.0.5，如果不是，则组播地址224.0.0.6</li>
+</ol>
+<p>OSPF区域：</p>
+<ol>
+<li><p>同一区域内的路由器才会建立关系，交换LSA，收敛后，同一区域内的路由器都拥有相同的LSDB。</p>
+</li>
+<li><p>如果有多个区域，那么每个区域都会选择一个性能较好的路由器来作为ABR（区域边界路由器），不同区域内的路由器进行通信直接通过这个ABR转发路由。</p>
+</li>
+<li><p>每个区域都有一个区域ID，为32位二进制数，可以表达为一个十进制数，也可以表达为一个点分十进制数字，例如区域0等价于0.0.0.0，区域1等价于0.0.0.1</p>
+</li>
+<li><p>骨干区域为区域0</p>
+</li>
+<li><p>非骨干区域间进行通信都要通过骨干区域0进行转发</p>
+</li>
+<li><p>如果网络中有不同的OSPF区域，那么有个区域肯定是区域0</p>
+</li>
+</ol>
+<h4 id="1-4-4-BGP"><a href="#1-4-4-BGP" class="headerlink" title="1.4.4 BGP"></a>1.4.4 BGP</h4><p>BGP即边界网关协议，属于外部网关协议，是不同自治系统AS使用的协议，每个自治系统都要有一个BGP发言人，用来交换信息，交换的信息是网络可达性的信息，即要到达某一网络所经过的一系列自治系统，且只有在信息发生变化时才会进行信息交换。</p>
+<h4 id="1-4-5-PING"><a href="#1-4-5-PING" class="headerlink" title="1.4.5 PING"></a>1.4.5 PING</h4><p>PING实际就是发送一个ICMP回送请求报文给目的主机，并等待回送的ICMP响应。实际就是利用了IP地址的唯一性，给目标主机的IP地址发送一个ICMP数据包，再要求对方返回一个同等大小的数据包来确定两台主机是否相互连通，以及时延是多少。</p>
+<h4 id="1-4-6-Traceroute"><a href="#1-4-6-Traceroute" class="headerlink" title="1.4.6 Traceroute"></a>1.4.6 Traceroute</h4><p>Traceroute是通过TTL和ICMP报文来确定从一个主机到网络上其他主机的路由。首先会发送一个TTL为1的数据包到目的主机，经过一个路由器TTL就减1，此时TTL为0数据包就会被丢弃，路由器会回送一个ICMP超时报文给源主机，源主机收到超时报文后，就会将TTL的值加1，再发送数据包到目的主机，不断重复以上的过程直到数据包到达目的主机，目的主机收到数据包后就会会送一个ICMP响应报文。</p>
+<h4 id="1-4-7-划分子网有何用"><a href="#1-4-7-划分子网有何用" class="headerlink" title="1.4.7 划分子网有何用"></a>1.4.7 划分子网有何用</h4><p>IP 是以网络号和主机号构成的，只有在同一个网络号下的主机才能够相互通信，不同网络号的主机要通信就要通过网关来实现，但只通过网络号来划分并不灵活，而子网就是将一个网络划分为更多个小的网络，这些小的网络就是子网，每一个子网都有相应的子网掩码，子网掩码就是用来判断多个 IP 是否在同一子网中的。</p>
+<h3 id="1-5-传输层"><a href="#1-5-传输层" class="headerlink" title="1.5 传输层"></a>1.5 传输层</h3><h4 id="1-5-1-TCP与UDP"><a href="#1-5-1-TCP与UDP" class="headerlink" title="1.5.1 TCP与UDP"></a>1.5.1 TCP与UDP</h4><ol>
+<li><p>TCP与UDP的区别：</p>
+<ul>
+<li>TCP即传输控制协议，是一种面向连接的、可靠的、基于字节流的传输层协议，TCP的连接是点对点连接，所以传输的数据是无差错、不丢失、不重复、按需到达的，但首部开销较大，有20字节。</li>
+<li>UDP即用户数据报协议，是一种面向无连接的、尽最大努力交付的、基于报文的传输层协议，UDP的连接可以是一对一、一对多、多对一和多对多的，传输的数据很可能会丢失，但首部开销小，只有8字节。</li>
+</ul>
+</li>
+<li><p>TCP的流量控制：</p>
+<ul>
+<li>所谓流量控制就是让对方发送速率不要过快，让接收方来得及接收。</li>
+<li>滑动窗口机制：滑动窗口机制的基本原理就是在任意时刻，发送方都维持了一个连续的允许发送的帧的序号，称为发送窗口；同时，接收方也维持了一个连续的允许接收的帧的序号，称为接收窗口。发送窗口和接收窗口的序号的上下界不一定要一样，甚至大小也可以不同。不同的滑动窗口协议窗口大小一般不同。</li>
+</ul>
+</li>
+<li><p>TCP的拥塞控制（加法增大乘法减小算法 AIMD）：</p>
+<ul>
+<li>拥塞控制的目的是防止过多的数据注入到网络中。</li>
+<li>慢开始：不要一开始就发送大量的数据，先探测一下网络的拥塞程度，也就是说由小到大逐渐增加拥塞窗口的大小。</li>
+<li>拥塞避免：让拥塞窗口值cwnd缓慢地增大，即每经过一个往返时间RTT就把发送方的拥塞控制窗口加一。</li>
+<li>快重传：发送方只要收到三个重复确认就立即重传对方尚未收到的报文段，不必继续等待设置的重传计时器时间到期。</li>
+<li>快恢复：快恢复和快重传是配合使用的，执行快恢复会将拥塞窗口值设为慢开始门限值的一半，然后执行拥塞避免。</li>
+</ul>
+</li>
+<li><p>流量控制和拥塞控制的区别：</p>
+<ul>
+<li>流量控制是端到端的问题，就是要控制住发送端的发送速率，以便接收端来得及接收。</li>
+<li>拥塞控制是一个全局性的过程，目的是防止过多的数据注入到网络中。</li>
+</ul>
+</li>
+<li><p>TCP的三次握手和四次挥手</p>
+<ul>
+<li>三次握手：三次握手就是计算机网络中客户端和服务端通信前进行连接的一个过程，客户端会先给服务端发出一个请求SYN（seq&#x3D;x），服务端收到请求且能够进行连接就会给客户端发送一个请求SYN和确认ACK（ack&#x3D;x+1，seq&#x3D;y），客户端收到了服务端的响应就会给服务端再次发送一个请求SYN和确认ACK（ack&#x3D;y+1，seq&#x3D;x+1），就完成了三次握手。</li>
+<li>四次挥手：客户端获得了需要的资源之后，就会给服务端发送中止FIN和确认ACK（fin&#x3D;1，ack&#x3D;z，seq&#x3D;x），服务端收到就会回复一个ACK（ack&#x3D;x+1，seq&#x3D;z），关闭连接接着给客户端发送一个中止FIN（fin&#x3D;1，ack&#x3D;x，seq&#x3D;y），客户端收到后就会给服务端发送一个确认ACK（ack&#x3D;y，seq&#x3D;x），便完成了四次挥手。</li>
+</ul>
+</li>
+<li><p>TIME_WAIT 状态产生的原因：</p>
+<ul>
+<li>为实现TCP全双工连接的可靠释放</li>
+<li>为使旧的数据包在网络因过期而消失</li>
+</ul>
+</li>
+<li><p>大量 TIME_WAIT 状态所带来的危害：</p>
+<ul>
+<li>如果系统中有很多 socket 处于 TIME_WAIT 状态，当需要创建新的 socket 连接的时候可能会受到影响，如果客户端的并发量持续很高，此时部分客户端就会显示连接不上。</li>
+</ul>
+</li>
+<li><p>为什么会采用三次握手，二次握手可以吗？第三次握手失败了怎么办？</p>
+<ul>
+<li>采用三次握手是为了防止失效的连接请求报文段再次传到服务器，因而产生错误。如果由于网络不稳定，虽然客户端以前发送的连接请求以到达服务方，但服务方的同意连接的应答未能到达客户端。则客户方要重新发送连接请求，若采用二次握手，服务方收到客服端重传的请求连接后，会以为是新的请求，就会发送同意连接报文，并新开进程提供服务，这样会造成服务方资源的无谓浪费。如果第三次握手失败，服务端不会重新发送ACK报文，而是发送RST（复位）报文，进入CLOSED状态，防止SYN泛洪攻击。</li>
+</ul>
+</li>
+<li><p>为什么断开连接要四次挥手？</p>
+<ul>
+<li>因为TCP连接是全双工的网络协议，允许同时通信的双方同时进行数据的收发，同样也允许收发两个方向的连接被独立关闭，以避免client数据发送完毕，向server发送FIN关闭连接，而server还有发送到client的数据没有发送完毕的情况。所以关闭TCP连接需要进行四次握手，每次关闭一个方向上的连接需要FIN和ACK两次握手。</li>
+</ul>
+</li>
+<li><p>TCP连接数过高怎么办？</p>
+<ul>
+<li>首先可以通过 netstat 命令查看当前的TCP连接哪种状态比较多，如果存在大量的 TIME_WAIT，则可以通过修改内核参数解决，修改 &#x2F;etc&#x2F;sysctl.conf 文件，添加控制 TIME_WAIT 数量的参数，一般设置为30左右，然后再执行 &#x2F;sbin&#x2F;sysctl -p 命令让参数生效。</li>
+</ul>
+</li>
+<li><p>产生大量TIME_WAIT的原因有哪些？</p>
+<ul>
+<li>TIME_WAIT状态是指TCP连接在关闭后等待一段时间的状态。这个状态的存在是为了确保网络中所有传输的数据都被正确接收和处理。产生大量TIME_WAIT状态的原因可以有以下几种：</li>
+<li>主动关闭连接的一方在关闭连接后，可能需要在TIME_WAIT状态等待一段时间，以确保远程主机确认连接关闭。这是TCP协议的一部分，可以防止已关闭的连接的数据包在网络中被误解为新连接的数据包。如果有大量的主动关闭连接的操作，那么就会导致大量的TIME_WAIT状态的产生。</li>
+<li>网络中存在丢包或延迟较大的情况，这会导致TCP协议无法及时接收到远程主机的连接关闭确认。在这种情况下，主动关闭连接的一方可能会在TIME_WAIT状态等待更长的时间，以确保确认收到。</li>
+<li>连接频繁地建立和关闭。如果一个应用程序频繁地建立和关闭连接，就会导致大量的TIME_WAIT状态的产生。这可能是由于应用程序设计不当，或者存在某些错误导致连接频繁断开。</li>
+<li>操作系统资源限制。操作系统对于TIME_WAIT状态的处理是有限制的，通常会限制同时存在的TIME_WAIT状态的数量。如果操作系统资源不足，就可能导致TIME_WAIT状态的积累。</li>
+</ul>
+</li>
+</ol>
+<h3 id="1-6-应用层"><a href="#1-6-应用层" class="headerlink" title="1.6 应用层"></a>1.6 应用层</h3><h4 id="1-6-1-HTTP和HTTPS"><a href="#1-6-1-HTTP和HTTPS" class="headerlink" title="1.6.1 HTTP和HTTPS"></a>1.6.1 HTTP和HTTPS</h4><ol>
+<li>HTTP常见状态码：<ul>
+<li>1开头：代表请求成功。</li>
+<li>200：这是最常见的状态码，表示服务端已经接受到客户端的请求，也给客户端返回了结果。</li>
+<li>202：表示服务端已经接受了请求，但还未处理。</li>
+<li>301：永久重定向，表示请求的资源已经被分配到新的URL。</li>
+<li>302：临时重定向。</li>
+<li>400：请求报文有误。</li>
+<li>403：服务器拒绝此次访问，一般是权限问题。</li>
+<li>404：访问失败。</li>
+<li>500：服务器执行请求时发生错误。</li>
+<li>503：服务器处于超负载或停机维护，无法处理请求。</li>
+</ul>
+</li>
+<li>HTTP的长连接和短连接：<ul>
+<li>HTTP&#x2F;1.0默认使用短链接，是一种非流水线工作方式，也就是说客户端向服务端每进行一次请求，就建立一次连接，收到响应就断开连接。</li>
+<li>HTTP&#x2F;1.1默认使用长连接，是一种流水线工作方式，也就是说客户端和服务端建立连接，在客户端收到响应后并不会断开连接，而是等设定的时间来断开连接。</li>
+</ul>
+</li>
+<li>HTTP&#x2F;1.0和HTTP&#x2F;1.1的区别：<ul>
+<li>长连接</li>
+<li>节约宽带</li>
+<li>HOST域</li>
+</ul>
+</li>
+<li>HTTP&#x2F;1.1和HTTP&#x2F;2.0的区别：<ul>
+<li>多路复用</li>
+<li>二进制分帧</li>
+<li>首部压缩</li>
+<li>服务器推送</li>
+</ul>
+</li>
+<li>GET 和 POST 的区别：<ul>
+<li>GET 获取数据，POST 传送数据</li>
+<li>对于 GET 方式的请求，浏览器会把 http header 和 data 一并发送出去，服务器响应200；而对于POST，浏览器先发送header，服务器响应100，浏览器再发送 data，服务器响应200。</li>
+</ul>
+</li>
+<li>HTTP 和 HTTPS 的区别：<ul>
+<li>HTTP 即超文本传输协议，通过 TCP 80 端口进行传输，而 HTTPS 是HTTP + SSL 协议构建的可进行加密传输、身份认证的网络协议，比 HTTP 更加安全，通过 TCP 443 端口进行传输。</li>
+<li>HTTPS 需要到 CA 申请证书，一般免费证书较少，因此需要一定费用。</li>
+<li>HTTP 信息是明文传输，HTTPS 是具有安全性的 SSL 加密传输协议。</li>
+</ul>
+</li>
+<li>HTTPS 加密过程：<ul>
+<li>服务器生成一对公钥A，密钥B</li>
+<li>浏览器向服务器发起请求的话，就发送公钥A给浏览器</li>
+<li>浏览器拿到公钥A后，随机生成密钥C，通过公钥A进行加密并传输给服务器</li>
+<li>服务器拿到后，通过密钥B解密获得密钥C，这时候两边都持有密钥C，就可以进行对称加解密</li>
+</ul>
+</li>
+</ol>
+<h4 id="1-6-2-DNS"><a href="#1-6-2-DNS" class="headerlink" title="1.6.2 DNS"></a>1.6.2 DNS</h4><p>DNS 即域名系统，在互联网中为域名和IP地址进行相互映射的一个分布式数据库，采用UDP协议，使用UDP53端口进行传输。</p>
+<p>DNS 中，主机向本地域名服务器的查询一般都是采用递归查询，如果主机所询问的本地域名服务器不知道被查询域名的IP地址时，那么本地域名服务器就会以DNS客户的身份向其它域名服务器发送查询请求，就是代替主机继续查询；本地域名服务器向根域名服务器的查询通常是采用迭代查询，当根域名服务器收到本地域名服务器发出的迭代查询请求报文时，要么给出所要查询的IP地址，要么告诉本地域名服务器下一步应当向哪一个域名服务器进行查询，然后让本地域名服务器进行后续的查询，查询到结果就会回送给源主机。</p>
+<h4 id="1-6-3-DHCP"><a href="#1-6-3-DHCP" class="headerlink" title="1.6.3 DHCP"></a>1.6.3 DHCP</h4><p>DHCP 即动态主机配置协议，是用与局域网的协议，采用UDP进行传输，服务端采用67端口，客户端采用68端口。</p>
+<ol>
+<li>客户端会以广播的形式发送 DHCP 发现报文</li>
+<li>DHCP 服务端收到之后就会发送 offer 报文，客户端只能接收一个 offer 报文，通常只接收第一个</li>
+<li>客户端受到 offer 报文之后会发送一个请求报文，字段中包含选中的 DHCP 地址和 IP 地址</li>
+<li>DHCP 服务端收到后会判断字段是否相同，相同就会给出一个确认报文，并携带 IP 地址和租期信息</li>
+<li>客户端收到确认报文后就会检查是否可用，如果不可用就会发送一个报文通知 DHCP 服务端该地址不可用</li>
+</ol>
+<h2 id="二、Linux方面"><a href="#二、Linux方面" class="headerlink" title="二、Linux方面"></a>二、Linux方面</h2><h3 id="2-1-命令"><a href="#2-1-命令" class="headerlink" title="2.1 命令"></a>2.1 命令</h3><ol>
+<li>基本命令：<ul>
+<li>查看硬件信息：ifconfig、free、fdisk</li>
+<li>查看系统性能信息：top、ps、iostat、lsof、netstat、df、mount、umount</li>
+<li>系统安全相关：chmod、chown、chgrp、passwd、su、sudo</li>
+<li>三剑客：grep、sed、awk</li>
+<li>其它：ls、ll、cd、pwd、rpm、yum、firewall-cmd、date、clear、echo、rm、touch、mkdir、mv、cp、find、uniq、sort</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-2-vim"><a href="#2-2-vim" class="headerlink" title="2.2 vim"></a>2.2 vim</h3><ol>
+<li>vim的三种模式：<ul>
+<li>普通模式：vim + 文件名即可进入普通模式</li>
+<li>插入模式：普通模式下输入i、a、o即可进入插入模式</li>
+<li>命令模式：输入：即可进入命令模式，输入Esc退出命令模式</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-3-Linux进程"><a href="#2-3-Linux进程" class="headerlink" title="2.3 Linux进程"></a>2.3 Linux进程</h3><ol>
+<li>Linux系统进程可以分为：<ul>
+<li>交互进程：由一个shell终端启动的进程，在执行过程中，需要与用户进行交互操作，可以运行于前台，也可以运行在后台。</li>
+<li>批处理进程：该进程是一个进程集合，负责按顺序启动其他的进程。 </li>
+<li>守护进程：守护进程是一直运行的一种进程，经常在Linux系统启动时启动，在系统关闭时终止。</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-4-run-level"><a href="#2-4-run-level" class="headerlink" title="2.4 run level"></a>2.4 run level</h3><p>Linux在完成核内引导以后，就开始运行init程序，包括以下几个运行级：</p>
+<ul>
+<li>0 系统停机状态，系统默认运行级别不能设为0，否则不能正常启动</li>
+<li>1 单用户工作状态，root权限，用于系统维护，禁止远程登陆</li>
+<li>2 多用户状态(没有NFS)</li>
+<li>3 完全的多用户状态(有NFS)，登陆后进入控制台命令行模式</li>
+<li>4 系统未使用，保留</li>
+<li>5 代表图形GUI模式</li>
+<li>6 系统正常关闭并重启，默认运行级别不能设为6，否则不能正常启动</li>
+</ul>
+<h3 id="2-5-标准输入输出和错误输出重定向"><a href="#2-5-标准输入输出和错误输出重定向" class="headerlink" title="2.5 标准输入输出和错误输出重定向"></a>2.5 标准输入输出和错误输出重定向</h3><ul>
+<li>0 代表标准输入，即stdin（standard input）</li>
+<li>1 代表标准输出，即stdout（standard output）</li>
+<li>2 代表标准错误输出，即stderr（standard error）</li>
+</ul>
+<h3 id="2-6-Linux系统启动过程"><a href="#2-6-Linux系统启动过程" class="headerlink" title="2.6 Linux系统启动过程"></a>2.6 Linux系统启动过程</h3><ol>
+<li>内核的引导：当计算机打开电源后，首先是BIOS开机自检，按照BIOS中设置的启动设备（通常是硬盘）来启动。操作系统接管硬件以后，首先读入 &#x2F;boot 目录下的内核文件。</li>
+<li>运行init：init 进程是系统所有进程的起点，首先是需要读取配置文件 &#x2F;etc&#x2F;inittab。启动时根据”运行级别”，确定要运行哪些程序。</li>
+<li>系统初始化：激活交换分区，检查磁盘，加载硬件模块以及其它一些需要优先执行任务。</li>
+<li>建立终端：基本系统环境已经设置好了，各种守护进程也已经启动了，init接下来会打开6个终端，以便用户登录系统，同时它会显示一个文本登录界面，在这个登录界面中会提示用户输入用户名。</li>
+<li>用户登陆系统：命令行登录、ssh登录、图形界面登录。</li>
+</ol>
+<h3 id="2-7-iptables"><a href="#2-7-iptables" class="headerlink" title="2.7 iptables"></a>2.7 iptables</h3><ol>
+<li>iptables 的工作过程：采用数据包过滤机制工作，当防火墙受到数据包时，iptables 是一层一层进行过滤的，规则顺序从上到下，从前到后进行过滤，即匹配了上面的规则，那么就不会匹配下面的规则了，如果所有规则都不能匹配，就使用默认规则。</li>
+<li>四表（tables）：<ul>
+<li>filter：进行包过滤处理</li>
+<li>nat：对数据地址信息和数据包端口信息进行转换</li>
+<li>mangle：对数据包信息进行标记</li>
+<li>raw：将数据包一些标记信息进行拆解</li>
+</ul>
+</li>
+<li>五链（chains）：<ul>
+<li>input：过滤进入主机的数据包</li>
+<li>forward：处理经过主机的数据包，与 nat 表有关</li>
+<li>output：处理从主机发出的数据包</li>
+<li>prerouting：数据包到达防火墙时进行分路由判断之前执行的规则，改变数据包的目的地址、目的端口</li>
+<li>postrouting：数据包离开防火墙时进行分路由判断之前执行的规则，改变数据包的目的地址、目的端口</li>
+</ul>
+</li>
+</ol>
+<h2 id="三、其它"><a href="#三、其它" class="headerlink" title="三、其它"></a>三、其它</h2><h3 id="3-1-Nginx和Apache"><a href="#3-1-Nginx和Apache" class="headerlink" title="3.1 Nginx和Apache"></a>3.1 Nginx和Apache</h3><ol>
+<li>nginx和apache的区别：<ul>
+<li>nginx和apache都是web服务器，但两者适应的场景不同，也就是两者专注于解决不同的问题。</li>
+<li>nginx：高并发处理能力强，擅长处理静态请求、反向代理、负载均衡；动态请求处理能力不强。</li>
+<li>apache：稳定、对动态请求处理强，rewrite能力比nginx强，模块多，bug相对较少；但不擅长高并发处理，耗费的资源较多。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-2-正向代理和反向代理"><a href="#3-2-正向代理和反向代理" class="headerlink" title="3.2 正向代理和反向代理"></a>3.2 正向代理和反向代理</h3><ol>
+<li>正向代理：正向代理是一个位于客户端和服务器之间的代理服务器。为了从服务器取得内容，客户端向代理服务器发送一个请求，并且指定目标服务器，之后代理服务器向目标服务器转发并且将获得的内容返回给客户端。正向代理的情况下客户端必须要进行一些特别的设置才能使用。</li>
+<li>反向代理：反向代理正相反，对于客户端来说，代理服务器就像是目标服务器，客户端不需要做特别的设置。客户端向反向代理服务器发送请求，反向代理服务器会自行判断，将请求转发给内部的目标服务器，并将响应回送给客户端，使得这些响应是它自己的一样。</li>
+<li>正向代理和反向代理的区别：正向代理需要客户端主动设置代理服务器ip或者域名进行访问，由设置的服务器去获取访问内容并返回；而反向代理不需要做任何设置，直接访问服务器真实ip或域名，但是服务器内部会自动根据访问内容进行跳转及内容返回，客户端不知道它最终访问的是哪些机器。</li>
+</ol>
+<h3 id="3-3-虚拟化和容器"><a href="#3-3-虚拟化和容器" class="headerlink" title="3.3 虚拟化和容器"></a>3.3 虚拟化和容器</h3><ol>
+<li>虚拟化：通过模拟计算机的硬件，来实现在同一台计算机上同时运行不同的操作系统的技术，常用的vmware、openstack、kvm都是使用的虚拟化技术。</li>
+<li>容器：容器就是在隔离环境运行的一个进程，如果进程停止，容器就会销毁。隔离的环境拥有自己的系统文件，IP地址，主机名等</li>
+<li>虚拟化和容器的区别：虚拟化需要硬件支持，需要模拟硬件，可以运行不同的操作系统，启动需要走开机启动流程(分钟级)；容器共用宿主机内核，第一个进程直接启动服务(nginx，mysql等)，开机秒级，轻量，损耗少。</li>
+</ol>
+<h3 id="3-4-CDN"><a href="#3-4-CDN" class="headerlink" title="3.4 CDN"></a>3.4 CDN</h3><ol>
+<li>CDN即内容分发网络，原理就是采用各种缓存服务器，将这些缓存服务器部署到用户访问相对集中的地区，用户访问网站时，利用全局负载技术将用户的访问指向距离最近的工作正常的缓存服务器上，由缓存服务器直接响应用户请求，从而提高用户体验。</li>
+<li>CDN功能：<ul>
+<li>节省骨干网带宽，减少带宽需求量。</li>
+<li>提供服务器端加速，解决由于用户访问量大造成的服务器过载问题。</li>
+<li>服务商能使用Web Cache技术在本地缓存用户访问过的Web页面和对象，实现相同对象的访问无须占用主干的出口带宽，并提高用户访问因特网页面的相应时间的需求。</li>
+<li>能克服网站分布不均的问题，并且能降低网站自身建设和维护成本。</li>
+<li>降低“通信风暴”的影响，提高网络访问的稳定性。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-5-C-S和B-S"><a href="#3-5-C-S和B-S" class="headerlink" title="3.5 C&#x2F;S和B&#x2F;S"></a>3.5 C&#x2F;S和B&#x2F;S</h3><ol>
+<li>C&#x2F;S和B&#x2F;S的区别：<ul>
+<li>C&#x2F;S即Client&#x2F;Server（客户端&#x2F;服务器）架构，是一个典型的两层架构。通过将任务合理分配到客户端和服务器，降低了系统的通讯开销，需要安装客户端才可进行管理操作。</li>
+<li>B&#x2F;S即即Brower&#x2F;Server（浏览器&#x2F;服务器）架构，统一了客户端，无需特殊安装，拥有Web浏览器即可；它将系统功能实现的核心部分集中到服务器上，简化了系统的开发、维护和使用。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-6-输入一个网址后发生了什么？"><a href="#3-6-输入一个网址后发生了什么？" class="headerlink" title="3.6 输入一个网址后发生了什么？"></a>3.6 输入一个网址后发生了什么？</h3><ol>
+<li>DNS解析，会根据输入的URL查找对应的IP<ul>
+<li>首先查找本地浏览器缓存，浏览器会保存近期访问过的一些地址的DNS信息。</li>
+<li>如果浏览器缓存没有，会尝试调用系统缓存和 host 文件查找DNS信息。</li>
+<li>如果系统缓存没有，就会发送请求到路由器上，查找路由器缓存中的DNS信息。</li>
+<li>如果路由器没有，就会发送请求到本地域名服务器，查找方式为递归查找。</li>
+<li>如果本地域名服务器没有，就会向根域名服务器查找，查找方式为迭代查找。</li>
+<li>最后就是浏览器得到了对应的IP，或者没有，即这个URL不存在。</li>
+</ul>
+</li>
+<li>TCP连接，浏览器向目标服务器进行TCP三次握手连接</li>
+<li>浏览器发送HTTP请求</li>
+<li>服务器响应HTTP请求</li>
+<li>浏览器收到响应后，解析渲染页面</li>
+<li>关闭TCP连接</li>
+</ol>
+<h3 id="3-7-进程和线程的区别"><a href="#3-7-进程和线程的区别" class="headerlink" title="3.7 进程和线程的区别"></a>3.7 进程和线程的区别</h3><ol>
+<li>进程：进程是操作系统资源分配的最小单位，每个进程都有独立的代码和数据空间（进程上下文），进程间的切换会有较大的开销，一个进程包含1–n个线程。</li>
+<li>线程：线程是 CPU 独立调度的最小单位，同一类线程共享代码和数据空间，每个线程有独立的运行栈和程序计数器(PC)，线程切换开销小。</li>
+<li>线程和进程的生命周期：新建、就绪、运行、阻塞、死亡。</li>
+</ol>
+<h3 id="3-8-软连接和硬链接的区别"><a href="#3-8-软连接和硬链接的区别" class="headerlink" title="3.8 软连接和硬链接的区别"></a>3.8 软连接和硬链接的区别</h3><ol>
+<li>软连接：<ul>
+<li>类似于快捷方式</li>
+<li>可以跨文件系统</li>
+<li>可以对一个不存在的文件名进行链接，硬链接必须要有源文件</li>
+<li>可以对目录进行链接</li>
+</ul>
+</li>
+<li>硬连接：<ul>
+<li>以文件副本的形式存在，但不占用实际空间</li>
+<li>不允许给目录创建硬链接</li>
+<li>只有在同一个文件系统中才能创建</li>
+<li>删除其中一个硬链接文件并不影响其他有相同 inode 号的文件</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-9-Dos-和-DDos"><a href="#3-9-Dos-和-DDos" class="headerlink" title="3.9 Dos 和 DDos"></a>3.9 Dos 和 DDos</h3><ol>
+<li>Dos 即拒绝服务，就是向目标服务器发送大量的虚拟 ip 请求，被攻击的服务器在收到请求后返回确认信息，等待攻击者确认，但由于请求的是虚拟 ip，服务器收不到回复，那么在一段时间内服务器会处于等待的状态，分配给虚拟 ip 请求的资源也没有释放，攻击者等待一段时间会因连接超时而断开，接着再发送大量新的请求，不断消耗服务器资源，最终导致瘫痪。</li>
+<li>DDos 即分布式拒绝服务，Dos 攻击是单机与单机之间的攻击模式，而 DDos 是利用一批僵尸主机向服务器同时发送攻击的模式。</li>
+</ol>
+<h3 id="3-10-四层负载均衡和七层负载均衡"><a href="#3-10-四层负载均衡和七层负载均衡" class="headerlink" title="3.10 四层负载均衡和七层负载均衡"></a>3.10 四层负载均衡和七层负载均衡</h3><ol>
+<li>四层负载均衡：主要是通过网络层和传输层的流量来实现基于 IP 加端口的负载均衡</li>
+<li>七层负载均衡：是基于应用层的负载均衡，支持各种应用层协议</li>
+</ol>
+<h3 id="3-11-cookie-session-token"><a href="#3-11-cookie-session-token" class="headerlink" title="3.11 cookie session token"></a>3.11 cookie session token</h3><ol>
+<li>cookie：由服务器生成，存储在浏览器中，用于保存客户登录等信息</li>
+<li>session：由服务器给浏览器生成的身份标识，用于区分不同客户端</li>
+<li>token：由服务器产生，如果客户端通过用户名和密码请求认证且认证成功，那么服务端就会发送一个 token 给回客户端，客户端每次请求都可以带上 token 来证明自己的合法地位</li>
+</ol>
+<h3 id="3-12-CPU上下文"><a href="#3-12-CPU上下文" class="headerlink" title="3.12 CPU上下文"></a>3.12 CPU上下文</h3><p>Linux 是一个支持多任务的操作系统，支持远大于 CPU 数量的任务同时运行，其实这些任务不是真正在同时运行，而是系统在很短时间内，将 CPU 轮流分配给它们，速度极快造成了像是在同时运行的错觉。而每个任务在运行前，CPU 都需要知道任务从哪里加载、从哪里运行，也就是需要系统为它们设置好 CPU 寄存器和程序计数器。</p>
+<ol>
+<li>CPU 寄存器：是 CPU 内置的容量很小但速度极快的内存。</li>
+<li>程序计数器：用来存储 CPU 正在执行的指令位置，或者即将执行的下一条指令位置。</li>
+</ol>
+<p>CPU 寄存器和程序计数器都是 CPU 在运行任何任务前，必须依赖的环境，就被称为 CPU 上下文。</p>
+<p>CPU 上下文切换就是指把先前一个任务的 CPU 上下文（CPU 寄存器和程序计数器的位置）保存起来，再加载新任务的上下文到这些寄存器和计数器，最后再跳转到程序计数器所指的新位置，运行新任务。而保存下来的上下文，会存储在系统内核中，并在任务重新调度执行时再加载进来，这样就能保证任务原来的状态不受影响，让任务看起来像是连续运行。</p>
+<p><strong>进程上下文切换</strong></p>
+<p>进程的运行空间分为内核空间和用户空间，分别对应 CPU 特权等级的 Ring0 和 Ring3。</p>
+<p>内核空间（Ring0）具有最高权限，可以直接访问所有资源；用户空间（Ring3）只能访问受限资源，不能直接访问系统资源，必须通过系统调用陷入到内核才可以使用。</p>
+<p>所以说进程可以在内核空间和用户空间运行，在前者运行被称为内核态，后者被称为用户态。从用户态到系统态的转变，就需要通过系统调用，比如查看文件内容就要依次调用 open()、read()、close()。在这期间就发生了上下文切换，CPU 寄存器里原来的用户态的指令位置需存起来，然后更行为内核态指令的新位置，最后跳转到内核态运行任务。系统调用结束后，CPU 寄存器需要恢复到原来用户态的指令位置，所以一次系统调用是发生了两次上下文切换。但系统调用又和进程上下文切换不太一样，进程上下文切换时一个进程切换到另一个进程运行，系统调用是在通过一个进程上运行的，后者常被称为特权模式切换。</p>
+<h3 id="3-13-Raid0-Raid1-Raid5-Raid6"><a href="#3-13-Raid0-Raid1-Raid5-Raid6" class="headerlink" title="3.13 Raid0 Raid1 Raid5 Raid6"></a>3.13 Raid0 Raid1 Raid5 Raid6</h3><ol>
+<li>Raid0：最少需要一块磁盘，原理是将多个磁盘组成一个大的磁盘，读写性能和存储容量都以磁盘数量倍数增加，数据在写入前都会进行分片的操作，存入不同的磁盘中，读写速度是所有Raid类型中最快的，容量也是最大的，但也是最不安全的，因为只要一块磁盘坏了数据就会丢失，且无法恢复。</li>
+<li>Raid1：最少需要两块磁盘，相当于一个数据存到多个磁盘中，只要剩下最少一块磁盘数据就不会丢失，是最安全的，但也是性能最低的，尽管有100个10G的磁盘组成Raid1，容量也是10G，且读写速度和一块磁盘时一样。</li>
+<li>Raid5：最少需要三块磁盘，每块磁盘1&#x2F;3的空间用来存校验信息，2&#x2F;3的空间用来存数据，三块磁盘组成Raid5的话允许坏掉一块磁盘，因为剩下两块磁盘会通过校验信息来恢复数据，读写速度和安全性是属于折中的。</li>
+<li>Raid6：最少需要四块磁盘，比Raid5多了一个校验位，所以安全性有更大的提升，四块磁盘组成的Raid6允许坏掉两块磁盘，但相比域Raid5写的性能变得更差。</li>
+</ol>
+</div><div class="article-licensing box"><div class="licensing-title"><p>八股文随记录</p><p><a href="https://warnerchen.github.io/2024/03/31/八股文随记录/">https://warnerchen.github.io/2024/03/31/八股文随记录/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Warner Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2024-03-31</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2025-02-27</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Buy me a coffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/03/31/calico%E7%9A%84%E4%B8%89%E7%A7%8D%E6%A8%A1%E5%BC%8F/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">calico的三种模式</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/03/31/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1ipv4-forward%E8%A2%AB%E4%BF%AE%E6%94%B9%E5%AF%BC%E8%87%B4%E7%9A%84%E7%94%9F%E4%BA%A7%E4%BA%8B%E6%95%85/"><span class="level-item">记录一次ipv4_forward被修改导致的生产事故</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">Comments</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/NUX_Octodex.gif" alt="Warner Chen"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Warner Chen</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shenzhen, Guangdong, CN</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives/"><p class="title">59</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags/"><p class="title">24</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/warnerchen/" target="_blank" rel="me noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://wiki.sanxian.tech/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sanxian</span></span><span class="level-right"><span class="level-item tag">wiki.sanxian.tech</span></span></a></li></ul></div></div></div><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-27T04:30:01.000Z">2025-02-27</time></p><p class="title"><a href="/2025/02/27/Ollama-Open-WebUI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">Ollama + Open WebUI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-24T03:03:53.000Z">2025-02-24</time></p><p class="title"><a href="/2025/02/24/%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F/">使用代理获取镜像</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-19T14:10:44.000Z">2025-02-19</time></p><p class="title"><a href="/2025/02/19/SUSE-AI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">SUSE AI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-13T03:37:54.000Z">2025-02-13</time></p><p class="title"><a href="/2025/02/13/RKE2-Cilium-%E9%85%8D%E7%BD%AE-Cluster-Mesh-%E5%AE%9E%E7%8E%B0%E8%B7%A8%E9%9B%86%E7%BE%A4%E9%80%9A%E4%BF%A1/">RKE2 Cilium 配置 Cluster Mesh 实现跨集群通信</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-10T08:32:32.000Z">2025-02-10</time></p><p class="title"><a href="/2025/02/10/Rancher-Monitoring-V2-Prometheus-PVC-%E6%89%A9%E5%AE%B9/">Rancher Monitoring V2 Prometheus PVC 扩容</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/02/"><span class="level-start"><span class="level-item">February 2025</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/01/"><span class="level-start"><span class="level-item">January 2025</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/12/"><span class="level-start"><span class="level-item">December 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">November 2024</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">October 2024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/09/"><span class="level-start"><span class="level-item">September 2024</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">August 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/06/"><span class="level-start"><span class="level-item">June 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/03/"><span class="level-start"><span class="level-item">March 2024</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/02/"><span class="level-start"><span class="level-item">February 2024</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ai/"><span class="tag">ai</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ansible/"><span class="tag">ansible</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/calico/"><span class="tag">calico</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cisco/"><span class="tag">cisco</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/container/"><span class="tag">container</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/containerd/"><span class="tag">containerd</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elasticsearch/"><span class="tag">elasticsearch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elk/"><span class="tag">elk</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/etcd/"><span class="tag">etcd</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/istio/"><span class="tag">istio</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jenkins/"><span class="tag">jenkins</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/k8s/"><span class="tag">k8s</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kafka/"><span class="tag">kafka</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/mysql/"><span class="tag">mysql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nexus/"><span class="tag">nexus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/prometheus/"><span class="tag">prometheus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/suse/"><span class="tag">suse</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/web/"><span class="tag">web</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/zookeeper/"><span class="tag">zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/"><span class="tag">面试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A6%96%E9%A1%B5/"><span class="tag">首页</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a><p class="is-size-7"><span>&copy; 2025 Warner Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

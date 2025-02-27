@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Redis - Warner&#039;s Wiki</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Warner&#039;s Wiki"><meta name="msapplication-TileImage" content="/logo.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Warner&#039;s Wiki"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、简介REmote DIctionary Server（Redis）是一个由 Salvatore Sanfilippo 写的 key-value 存储系统，是跨平台的非关系型数据库。  Redis 就是一款 NoSQL，而 NoSQL 就是指非关系型数据库，主要分为四种：  键值型：Redis 文档型：ElasticSearch、Mongdb 面向列：Hbase 图形化：Neo4j"><meta property="og:type" content="blog"><meta property="og:title" content="Redis"><meta property="og:url" content="https://warnerchen.github.io/2024/02/18/redis/"><meta property="og:site_name" content="Warner&#039;s Wiki"><meta property="og:description" content="一、简介REmote DIctionary Server（Redis）是一个由 Salvatore Sanfilippo 写的 key-value 存储系统，是跨平台的非关系型数据库。  Redis 就是一款 NoSQL，而 NoSQL 就是指非关系型数据库，主要分为四种：  键值型：Redis 文档型：ElasticSearch、Mongdb 面向列：Hbase 图形化：Neo4j"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/redis/redis_logo.jpeg"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/redis/redis%E4%B8%80.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/redis/redis%E4%BA%8C.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/redis/redis%E4%B8%89.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/redis/redis%E5%9B%9B.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/redis/redis%E4%BA%94.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/redis/redis%E5%85%AD.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/redis/redis%E4%B8%83.png"><meta property="article:published_time" content="2024-02-18T08:06:41.000Z"><meta property="article:modified_time" content="2025-02-26T23:37:00.000Z"><meta property="article:author" content="Warner Chen"><meta property="article:tag" content="redis"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://warnerchen.github.io/2024/02/18/redis/redis_logo.jpeg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://warnerchen.github.io/2024/02/18/redis/"},"headline":"Redis","image":["https://warnerchen.github.io/2024/02/18/redis/redis%E4%B8%80.png","https://warnerchen.github.io/2024/02/18/redis/redis%E4%BA%8C.png","https://warnerchen.github.io/2024/02/18/redis/redis%E4%B8%89.png","https://warnerchen.github.io/2024/02/18/redis/redis%E5%9B%9B.png","https://warnerchen.github.io/2024/02/18/redis/redis%E4%BA%94.png","https://warnerchen.github.io/2024/02/18/redis/redis%E5%85%AD.png","https://warnerchen.github.io/2024/02/18/redis/redis%E4%B8%83.png"],"datePublished":"2024-02-18T08:06:41.000Z","dateModified":"2025-02-26T23:37:00.000Z","author":{"@type":"Person","name":"Warner Chen"},"publisher":{"@type":"Organization","name":"Warner's Wiki","logo":{"@type":"ImageObject","url":"https://warnerchen.github.io/logo.jpg"}},"description":"一、简介REmote DIctionary Server（Redis）是一个由 Salvatore Sanfilippo 写的 key-value 存储系统，是跨平台的非关系型数据库。  Redis 就是一款 NoSQL，而 NoSQL 就是指非关系型数据库，主要分为四种：  键值型：Redis 文档型：ElasticSearch、Mongdb 面向列：Hbase 图形化：Neo4j"}</script><link rel="canonical" href="https://warnerchen.github.io/2024/02/18/redis/"><link rel="icon" href="/logo.jpg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2024-02-18T08:06:41.000Z" title="18/02/2024, 4:06:41 pm">2024-02-18</time></span><span class="level-item">Updated&nbsp;<time dateTime="2025-02-26T23:37:00.000Z" title="27/02/2025, 7:37:00 am">2025-02-27</time></span><span class="level-item">28 minutes read (About 4128 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">Redis</h1><div class="content"><h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><p>REmote DIctionary Server（Redis）是一个由 Salvatore Sanfilippo 写的 key-value 存储系统，是跨平台的非关系型数据库。</p>
+<p><img src="/2024/02/18/redis/redis_logo.jpeg" alt="redis_logo"></p>
+<p>Redis 就是一款 NoSQL，而 NoSQL 就是指非关系型数据库，主要分为四种：</p>
+<ol>
+<li>键值型：Redis</li>
+<li>文档型：ElasticSearch、Mongdb</li>
+<li>面向列：Hbase</li>
+<li>图形化：Neo4j</li>
+</ol>
+<span id="more"></span>
+
+<h2 id="二、Redis基础"><a href="#二、Redis基础" class="headerlink" title="二、Redis基础"></a>二、Redis基础</h2><h3 id="2-1-Redis安装"><a href="#2-1-Redis安装" class="headerlink" title="2.1 Redis安装"></a>2.1 Redis安装</h3><ol>
+<li>通过 docker-compose 安装 redis</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">6379</span><span class="string">:6379</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>进入容器内部测试 redis</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">连接redis</span></span><br><span class="line">redis-cli</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">set</span>新建键值对</span></span><br><span class="line">set key value</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">get获取键值</span></span><br><span class="line">get key</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-Redis常用命令"><a href="#2-2-Redis常用命令" class="headerlink" title="2.2 Redis常用命令"></a>2.2 Redis常用命令</h3><p>redis 的数据存储结构有以下几种：</p>
+<ul>
+<li>key-string（字符串）：一个 key 对应一个值</li>
+<li>key-hash（哈希）：一个 key 对应一个 map</li>
+<li>key-list（列表）：一个 key 对应一个列表</li>
+<li>key-set（集合）：一个 key 对应一个集合</li>
+<li>key-zset（有序集合）：一个 key 对应一个有序的集合</li>
+</ul>
+<p><img src="/2024/02/18/redis/redis%E4%B8%80.png" alt="redis一"></p>
+<h4 id="2-2-1-string常用命令"><a href="#2-2-1-string常用命令" class="headerlink" title="2.2.1 string常用命令"></a>2.2.1 string常用命令</h4><ol>
+<li>设置值</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set key value</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>取值</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get key</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>批量操作</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mset key1 value1 key2 value2 ...</span><br><span class="line">mget key1 key2 ... </span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>自增</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">incr key</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>自减</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">decr key</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>自增自减指定数量</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">incrby key number</span><br><span class="line">decrby key number</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>设置值的同时指定生存时间</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setex key seconds value</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li>设置值，如果当前 key 不存在如同 set，如果存在则说明都不做</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setex key value</span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li>在 key 对应的 value 后追加内容</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">append key value</span><br></pre></td></tr></table></figure>
+
+<ol start="10">
+<li>查看 value 字符串长度</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strlen key</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-2-hash常用命令"><a href="#2-2-2-hash常用命令" class="headerlink" title="2.2.2 hash常用命令"></a>2.2.2 hash常用命令</h4><ol>
+<li>存储数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hset key field value</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>获取数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hget key field</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>批量操作</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hmset key1 field1 value1 field2 value2 ...</span><br><span class="line">hmget key1 firle1 field2 ...</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>指定自增</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hincrby key field number</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>设置值，如果当前 key 不存在如同 set，如果存在则说明都不做</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hsetnx key field value</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>检查 field 是否存在</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexists key field</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>删除某个 field</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdel key field1 field2 ...</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li>获取当前 hash 结构中的全部 field 和 value</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hgetall key</span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li>获取当前 hash 结构中的全部 field</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hkeys key</span><br></pre></td></tr></table></figure>
+
+<ol start="10">
+<li>获取当前 hash 结构中的全部 value</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hvals key</span><br></pre></td></tr></table></figure>
+
+<ol start="11">
+<li>获取当前 hash 中 field 的数量</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hlen key</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-3-list常用命令"><a href="#2-2-3-list常用命令" class="headerlink" title="2.2.3 list常用命令"></a>2.2.3 list常用命令</h4><ol>
+<li>存储数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从左侧插入数据</span></span><br><span class="line">lpush key value1 value2 ...</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从右侧插入数据</span></span><br><span class="line">rpush key value1 value2 ...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果key不存在，什么都不做，如果key存在但不是list结构，也什么都不做</span></span><br><span class="line">lpushx key value1 value2 ...</span><br><span class="line">rpushx key value1 value2 ...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过索引位置添加value</span></span><br><span class="line">lset key index value</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>获取数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">左侧弹出数据并移除</span></span><br><span class="line">lpop key</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">右侧弹出数据并移除</span></span><br><span class="line">rpop key</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取一定范围的数据，start从0开始，stop为-1时为最后一个value，-2时为倒数第二个value</span></span><br><span class="line">lrange key start stop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据索引位置获取value</span></span><br><span class="line">lindex key index</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取整个list的长度</span></span><br><span class="line">llen key</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>删除数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除list中count个value的值，当count&gt;0，从左向右删除，但count&lt;0，从右向左删除，但count==0，全部删除</span></span><br><span class="line">lrem key count value</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">保留列表中指定范围内的数据，超出这个范围的都会被移除</span></span><br><span class="line">ltrim start stop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将list1中的最后一个数据弹出，插入到list2中的第一个位置</span></span><br><span class="line">rpoplpush key1 key2</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-4-set常用命令"><a href="#2-2-4-set常用命令" class="headerlink" title="2.2.4 set常用命令"></a>2.2.4 set常用命令</h4><ol>
+<li>存储数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">value不允许重复，且数据无序排列</span></span><br><span class="line">sadd key value1 value2 ...</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>获取数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取全部数据</span></span><br><span class="line">smembers key</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">随机获取数据，并移除，可加弹出数量</span></span><br><span class="line">spop key number</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">取多个<span class="built_in">set</span>的交集</span></span><br><span class="line">sinter key1 key2 ...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">取多个<span class="built_in">set</span>的并集</span></span><br><span class="line">sunion key1 key2 ...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">取多个<span class="built_in">set</span>的差集</span></span><br><span class="line">sdiff key1 key2 ...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看当前<span class="built_in">set</span>是否包含某个值</span></span><br><span class="line">sismember key value</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>删除数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">srem key value1 value2 ...</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-5-zset常用命令"><a href="#2-2-5-zset常用命令" class="headerlink" title="2.2.5 zset常用命令"></a>2.2.5 zset常用命令</h4><ol>
+<li>存储数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">score必须是数值，value不允许重复</span></span><br><span class="line">zadd key score1 value1 score2 value2 ...</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改score，如果value存在则增加分数，如果不存在则相当于zadd</span></span><br><span class="line">zincrby key number value</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>获取数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看指定value的分数</span></span><br><span class="line">zscore key value</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取value数量</span></span><br><span class="line">zcard key</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据score范围查询value数量</span></span><br><span class="line">zcount key min max</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据分数从小到大排序，获取指定范围内的数据，添加了withscores参数会返回value的具体score</span></span><br><span class="line">zrange key start stop withscores</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">从大到小</span></span><br><span class="line">zrevrange key start stop withscores</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据分数的范围获取数据，如果不希望包括min和max的值可以用(min max)的方式，最大最小值用±inf表示</span></span><br><span class="line">zrangebyscore key min max withscores [limit,offset,count]</span><br><span class="line">zrevrangebyscore key max min withscores [limit,offset,count]</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>删除数据</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zrem key value1 value2 ...</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-6-key常用命令"><a href="#2-2-6-key常用命令" class="headerlink" title="2.2.6 key常用命令"></a>2.2.6 key常用命令</h4><ol>
+<li>查看所有key</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keys *</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>查看某个key是否存在</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exists key</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>删除key</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">del key</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>设置key的生存时间</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">单位为s</span></span><br><span class="line">expire key seconds</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">单位为ms</span></span><br><span class="line">pexpire key milliseconds</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">指定生存到某个时间点</span></span><br><span class="line">expireat key timestamp</span><br><span class="line">pexpireat key millseconds</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看key的剩余生存时间，返回-2则key不存在，-1则没设置生存时间</span></span><br><span class="line">ttl key</span><br><span class="line">pttl key</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">移除生存时间</span></span><br><span class="line">persist key</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>选择操作的库</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">redis默认有16个库</span></span><br><span class="line">select 0~15</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">移动key到另一个库中</span></span><br><span class="line">move key db</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-7-库的常用命令"><a href="#2-2-7-库的常用命令" class="headerlink" title="2.2.7 库的常用命令"></a>2.2.7 库的常用命令</h4><ol>
+<li>清空当前所在数据库</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flushdb</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>清空所有数据库</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flushdball</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>查看当前库有多少key</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dbsize</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>查看最后一次操作的时间</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lastsave</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>实时监控redis接收到的命令</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">monitor</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="三、Redis配置"><a href="#三、Redis配置" class="headerlink" title="三、Redis配置"></a>三、Redis配置</h2><h3 id="3-1-Redis的AUTH"><a href="#3-1-Redis的AUTH" class="headerlink" title="3.1 Redis的AUTH"></a>3.1 Redis的AUTH</h3><ol>
+<li>docker-compose.yaml</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">6379</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./redis.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>设置 Redis 连接密码</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim redis.conf</span><br><span class="line">requirepass toortoor</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>进入 Redis 之后都需要输入密码才可以创建 key</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">redis-cli</span><br><span class="line">auth toortoor</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-Redis的事务"><a href="#3-2-Redis的事务" class="headerlink" title="3.2 Redis的事务"></a>3.2 Redis的事务</h3><p>Redis 事务可以一次执行多个命令， 并且带有以下三个重要的保证：</p>
+<ul>
+<li>批量操作在发送 EXEC 命令前被放入队列缓存</li>
+<li>收到 EXEC 命令后进入事务执行，事务中任意命令执行失败，其余的命令依然被执行</li>
+<li>在事务执行过程，其他客户端提交的命令请求不会插入到事务执行命令序列中</li>
+</ul>
+<p>一个事务从开始到执行会经历以下几个阶段：</p>
+<ul>
+<li>开始事务：multi</li>
+<li>命令入队：……</li>
+<li>执行事务：exec</li>
+<li>取消事务：discard</li>
+<li>监听：在开启事务之前，先通过 watch 监听事务中要操作的 key，如果在事务过程中有其他的客户端修改了 key，那么事务将会被取消</li>
+</ul>
+<p>事务可以理解为一个打包的批量执行脚本，但批量指令并非原子化的操作，中间某条指令的失败不会导致前面已做指令的回滚，也不会造成后续的指令不做。</p>
+<ol>
+<li>监听</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">watch name age gander</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>开始事务</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">multi</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>命令入队</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set name cqm</span><br><span class="line">set age 22</span><br><span class="line">set gander male</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>执行事务&#x2F;取消事务</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec/discard</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-Redis的持久化"><a href="#3-3-Redis的持久化" class="headerlink" title="3.3 Redis的持久化"></a>3.3 Redis的持久化</h3><h4 id="3-3-1-RDB持久化"><a href="#3-3-1-RDB持久化" class="headerlink" title="3.3.1 RDB持久化"></a>3.3.1 RDB持久化</h4><p>Redis 的配置文件位于 Redis 安装目录,	ROB 是默认的持久化机制。</p>
+<ol>
+<li>docker-compose.yaml</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">6379</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./redis.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data:/data</span></span><br><span class="line">    <span class="comment"># 加载redis.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>redis.conf</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">vim</span> <span class="string">redis.conf</span></span><br><span class="line"><span class="comment"># 在900秒内有1一个 key 发生了变化，就执行 RDB 持久化</span></span><br><span class="line"><span class="string">save</span> <span class="number">900</span> <span class="number">1</span></span><br><span class="line"><span class="string">save</span> <span class="number">300</span> <span class="number">10</span></span><br><span class="line"><span class="string">save</span> <span class="number">60</span> <span class="number">10000</span></span><br><span class="line"><span class="comment"># 开启RDB持久化</span></span><br><span class="line"><span class="string">rdbchecksum</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># RDB持久化名称</span></span><br><span class="line"><span class="string">dbfilename</span> <span class="string">dump.rdb</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>测试持久化</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set name cqm</span><br><span class="line">set age 22</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">关闭redis并保存</span></span><br><span class="line">shutdown save</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>可以看到 data 目录下多了个 rdb 文件，即使 redis 容器重启也不会造成 key 的丢失</li>
+</ol>
+<p><img src="/2024/02/18/redis/redis%E4%BA%8C.png" alt="redis二"></p>
+<h4 id="3-3-2-AOF持久化"><a href="#3-3-2-AOF持久化" class="headerlink" title="3.3.2 AOF持久化"></a>3.3.2 AOF持久化</h4><p>AOF 比起 RDB 有更高的数据安全性，如果同时开启了 AOF 和 RDB，那么前者比后者的优先级更高，且如果先开启了 RDB 在开启 AOF，那么 RDB 中的内容会被 AOF 的内容覆盖。</p>
+<ol>
+<li>redis.conf</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">开启AOF持久化</span></span><br><span class="line">appendonly yes</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">AOF文件名</span></span><br><span class="line">appendfilename appendonly.aof</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">AOF持久化执行策略</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">always:每次执行写操作都调用fsync</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">everysec:最多每秒调用一次fsync</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">no:根据环境的不同在不确定的时间调用fsync</span></span><br><span class="line">appendfsync always|everysec|no</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>重启 docker-compose 测试</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set gander male</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">不RDB持久化</span></span><br><span class="line">shutdown nosave</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>可以看到 data 目录下多了个 aof 文件，即 AOF 持久化生成的文件</li>
+</ol>
+<p><img src="/2024/02/18/redis/redis%E4%B8%89.png" alt="redis三"></p>
+<h3 id="3-4-Redis主从架构"><a href="#3-4-Redis主从架构" class="headerlink" title="3.4 Redis主从架构"></a>3.4 Redis主从架构</h3><p>Redis 的主从架构是指 Master 节点负责写操作，而其余的 Slave 节点负责读操作。</p>
+<p><img src="/2024/02/18/redis/redis%E5%9B%9B.png" alt="redis四"></p>
+<ol>
+<li>docker-compose.yaml</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">redis-master:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis-master</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7001</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./redis1.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data1:/data</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">  <span class="attr">redis-slave1:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis-slave1</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7002</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./redis2.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data2:/data</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">    <span class="comment"># 连接redis-master容器，并将该容器ip地址映射为master</span></span><br><span class="line">    <span class="attr">links:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">redis-master:master</span></span><br><span class="line">  <span class="attr">redis-slave2:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis-slave2</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7003</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./redis3.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data3:/data</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">    <span class="attr">links:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">redis-master:master</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>从节点 redis.conf</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">slaveof &lt;主节点地址&gt; &lt;端口&gt;</span></span><br><span class="line">slaveof master 6379</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>启动后进入容器内部通过 <code>info</code> 可看到节点信息</li>
+</ol>
+<p><img src="/2024/02/18/redis/redis%E4%BA%94.png" alt="redis五"></p>
+<h3 id="3-5-Redis哨兵模式"><a href="#3-5-Redis哨兵模式" class="headerlink" title="3.5 Redis哨兵模式"></a>3.5 Redis哨兵模式</h3><p>Redis 的主从架构有一个很明显的问题，就是当 Master 节点出现问题宕机后，那么 Redis 集群就没有可以进行写操作的 Redis 了，而哨兵就可以解决该问题。</p>
+<p>在每个节点中都会有个哨兵与 Redis 进行连接，且哨兵与哨兵之间也会进行连接，如果 Master 节点出现故障宕机了，那么哨兵们就会选出一个 Slave 来作为新的 Master 来提供写的操作。</p>
+<p><img src="/2024/02/18/redis/redis%E5%85%AD.png" alt="redis六"></p>
+<ol>
+<li>docker-compose.yaml</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">redis-master:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis-master</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7001</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./redis1.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data1:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sentinel1.conf:/data/sentinel.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">  <span class="attr">redis-slave1:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis-slave1</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7002</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./redis2.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data2:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sentinel2.conf:/data/sentinel.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">    <span class="attr">links:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">redis-master:master</span></span><br><span class="line">  <span class="attr">redis-slave2:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis-slave2</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7003</span><span class="string">:6379</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./redis3.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data3:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./sentinel3.conf:/data/sentinel.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">    <span class="attr">links:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">redis-master:master</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Master 节点 sentinel.conf</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">以守护进程的方式运行redis</span></span><br><span class="line">daemonize yes</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">指定Master节点，sentinel monitor &lt;名称&gt; &lt;ip&gt; &lt;端口&gt; &lt;Slave个数&gt;</span></span><br><span class="line">sentinel monitor master localhost 6379 2</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">指定哨兵每隔多久检测一次redis主从架构</span></span><br><span class="line">sentinel down-after-milliseconds master 10000</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>Slave 节点 sentinel.conf</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">daemonize yes</span><br><span class="line">sentinel monitor master master 6379 2</span><br><span class="line">sentinel down-after-milliseconds master 10000</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>进入容器启动哨兵，当 Master 节点出现问题后，就会在两个 Slave 中选出一个作为新的 Master，而旧的 Master 启动后就会变为新的 Slave</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-sentinel /data/sentinel.conf</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-6-Redis集群"><a href="#3-6-Redis集群" class="headerlink" title="3.6 Redis集群"></a>3.6 Redis集群</h3><p>Redis 集群在保证主从和哨兵的基本功能之外，还能提高 Redis 存储数据的能力，主要的特点如下</p>
+<ul>
+<li>Redis 集群是无中心的</li>
+<li>Redis 集群有ping-pang的机制</li>
+<li>投票机制，集群节点的数量必须是 2n+1</li>
+<li>分配了 16484 个 hash 槽，在存储数据时，会对 key 进行 crc16 的算法，并对 16384 进行取余，通过结果分配到对应的节点上，每个节点都有自己维护的 hash 槽</li>
+<li>每个主节点都要跟一个从节点，但这里的从节点只管备份，不管查询</li>
+<li>集群中半数的节点宕机后，那么集群就瘫痪</li>
+</ul>
+<p><img src="/2024/02/18/redis/redis%E4%B8%83.png" alt="redis七"></p>
+<ol>
+<li>docker-compose.yaml</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">redis1:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis1</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7001</span><span class="string">:7001</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">17001</span><span class="string">:17001</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./conf.d/redis1.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">  <span class="attr">redis2:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis2</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7002</span><span class="string">:7002</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">17002</span><span class="string">:17002</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./conf.d/redis2.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">  <span class="attr">redis3:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis3</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7003</span><span class="string">:7003</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">17003</span><span class="string">:17003</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./conf.d/redis3.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">  <span class="attr">redis4:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis4</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7004</span><span class="string">:7004</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">17004</span><span class="string">:17004</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./conf.d/redis4.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">  <span class="attr">redis5:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis5</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7005</span><span class="string">:7005</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">17005</span><span class="string">:17005</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./conf.d/redis5.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br><span class="line">  <span class="attr">redis6:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">redis6</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">daocloud.io/library/redis:5.0.9</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7006</span><span class="string">:7006</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">17006</span><span class="string">:17006</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./conf.d/redis6.conf:/usr/local/redis/redis.conf</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;redis-server&quot;</span>, <span class="string">&quot;/usr/local/redis/redis.conf&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>redis{1..6}.conf，x 为 {1..6}</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定redis端口</span></span><br><span class="line"><span class="string">port</span> <span class="string">700x</span></span><br><span class="line"><span class="comment"># 开启集群</span></span><br><span class="line"><span class="string">cluster-enabled</span> <span class="literal">yes</span></span><br><span class="line"><span class="comment"># 集群信息文件</span></span><br><span class="line"><span class="string">cluster-config-file</span> <span class="string">nodes-700x.conf</span></span><br><span class="line"><span class="comment"># 集群对外ip</span></span><br><span class="line"><span class="string">cluster-announce-ip</span> <span class="number">192.168</span><span class="number">.88</span><span class="number">.135</span></span><br><span class="line"><span class="comment"># 集群对外端口</span></span><br><span class="line"><span class="string">cluster-announce-port</span> <span class="string">700x</span></span><br><span class="line"><span class="comment"># 集群总线端口</span></span><br><span class="line"><span class="string">cluster-announce-bus-port</span> <span class="string">1700x</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>进入任意 reids 容器创建集群</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--cluster-replicas:每个主节点分配的从节点个数</span></span><br><span class="line">redis-cli --cluster create 192.168.88.135:7001 192.168.88.135:7002 192.168.88.135:7003 192.168.88.135:7004 192.168.88.135:7005 192.168.88.135:7006 --cluster-replicas 1</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>由于每个主节点都被分配了不同的 hash 槽，所以要在容器内任意切换不同的 redis 节点需要加参数 <code>-c</code></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 192.168.88.135 -p 7001 -c</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="四、Redis常见问题"><a href="#四、Redis常见问题" class="headerlink" title="四、Redis常见问题"></a>四、Redis常见问题</h2><h3 id="4-1-Redis的删除策略"><a href="#4-1-Redis的删除策略" class="headerlink" title="4.1 Redis的删除策略"></a>4.1 Redis的删除策略</h3><p>当 key 的生存时间到了，Redis 并不会立即删除该 key，而是遵守以下删除策略来进行删除</p>
+<ul>
+<li>定期删除：Redis 每隔一段时间就回去查看设置了生存时间的 key，默认是 100ms 查看 3 个 key</li>
+<li>惰性删除：当用户去查询已经超过了生存时间的 key，Redis 会先查看该 key 是否已经超过了生存时间，如果超过，那么 Redis 会将该 key 删除并给用户返回一个空值</li>
+</ul>
+<h3 id="4-2-Redis的淘汰机制"><a href="#4-2-Redis的淘汰机制" class="headerlink" title="4.2 Redis的淘汰机制"></a>4.2 Redis的淘汰机制</h3><p>当 Redis 内存满的时候添加了一个新的数据，那么就会执行 Redis 的淘汰机制，通过 <code>maxmemory-policy</code> 来设置，参数如下</p>
+<ol>
+<li><p>volatile-lru：当内存不足时，会删除一个设置了生存时间且最近最少使用的 key</p>
+</li>
+<li><p>allkeys-lru：当内存不足时，会删除一个设置了最近最少使用的 key</p>
+</li>
+<li><p>volatile-lfu：当内存不足时，会删除一个设置了生存时间且最近使用频率最低的 key</p>
+</li>
+<li><p>allkeys-lfu：当内存不足时，会删除一个设置了最近使用频率最低的 key</p>
+</li>
+<li><p>volatile-random：当内存不足时，会随机删除一个设置了生存时间的 key</p>
+</li>
+<li><p>allkeys-random：当内存不足时，会随机删除一个 key</p>
+</li>
+<li><p>volatile-ttl：当内存不足时，会删除一个生存时间最少的 key</p>
+</li>
+<li><p>noeviction：内存不足时，直接报错</p>
+</li>
+</ol>
+<h3 id="4-3-缓存问题"><a href="#4-3-缓存问题" class="headerlink" title="4.3 缓存问题"></a>4.3 缓存问题</h3><p><strong>缓存穿透</strong></p>
+<p>当客户查询的数据 Redis 中没有，数据库中也没有，且请求量特别大时，就会导致数据库的压力过大，解决方法如下</p>
+<ul>
+<li>根据 id 查询时，如果 id 是自增的，那么可以将最大的 id 放到 Reids 中，当查询数据时直接对比 id 即可</li>
+<li>如果 id 不是 int 型，那么可以将全部的 id 放入 set 中，用户查询之前可以先到 set 查看是否有该 id</li>
+<li>获取用户的 ip 地址，对该地址进行访问限制</li>
+</ul>
+<p><strong>缓存击穿</strong></p>
+<p>当用户查询的是热点数据时，那么并发量肯定是很高的，当 Redis 中的热点数据过期了，那么数据库的压力就会很大，甚至宕机，解决方法如下</p>
+<ul>
+<li>在访问热点数据时，缓存中没有的时候，可以添加一把锁，让几个请求去访问数据库，避免数据库宕机</li>
+<li>把热点数据的生存时间去掉</li>
+</ul>
+<p><strong>缓存雪崩</strong></p>
+<p>当大量缓存同时到期时，导致请求都去到了数据库，也很容易导致数据库宕机，解决方法如下</p>
+<ul>
+<li>对缓存中的数据设置一个随机的生存时间，避免同时过期</li>
+</ul>
+<p><strong>缓存倾斜</strong></p>
+<p>如果将热点数据放在集群中的某一 Redis 节点上时，那么大量的数据都会去到该 Redis 节点，导致节点宕机，解决方法如下</p>
+<ul>
+<li>主从架构，准备大量的从节点</li>
+<li>在 Tomcat 中做 JVM 缓存，在查询 Redis 前先查询 JVM 缓存</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Redis</p><p><a href="https://warnerchen.github.io/2024/02/18/redis/">https://warnerchen.github.io/2024/02/18/redis/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Warner Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2024-02-18</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2025-02-27</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/redis/">redis</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Buy me a coffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/02/18/mysql/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">MySQL</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/02/18/kubernetes/"><span class="level-item">Kubernetes</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">Comments</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/NUX_Octodex.gif" alt="Warner Chen"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Warner Chen</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shenzhen, Guangdong, CN</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives/"><p class="title">59</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags/"><p class="title">24</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/warnerchen/" target="_blank" rel="me noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://wiki.sanxian.tech/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sanxian</span></span><span class="level-right"><span class="level-item tag">wiki.sanxian.tech</span></span></a></li></ul></div></div></div><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-27T04:30:01.000Z">2025-02-27</time></p><p class="title"><a href="/2025/02/27/Ollama-Open-WebUI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">Ollama + Open WebUI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-24T03:03:53.000Z">2025-02-24</time></p><p class="title"><a href="/2025/02/24/%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F/">使用代理获取镜像</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-19T14:10:44.000Z">2025-02-19</time></p><p class="title"><a href="/2025/02/19/SUSE-AI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">SUSE AI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-13T03:37:54.000Z">2025-02-13</time></p><p class="title"><a href="/2025/02/13/RKE2-Cilium-%E9%85%8D%E7%BD%AE-Cluster-Mesh-%E5%AE%9E%E7%8E%B0%E8%B7%A8%E9%9B%86%E7%BE%A4%E9%80%9A%E4%BF%A1/">RKE2 Cilium 配置 Cluster Mesh 实现跨集群通信</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-10T08:32:32.000Z">2025-02-10</time></p><p class="title"><a href="/2025/02/10/Rancher-Monitoring-V2-Prometheus-PVC-%E6%89%A9%E5%AE%B9/">Rancher Monitoring V2 Prometheus PVC 扩容</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/02/"><span class="level-start"><span class="level-item">February 2025</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/01/"><span class="level-start"><span class="level-item">January 2025</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/12/"><span class="level-start"><span class="level-item">December 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">November 2024</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">October 2024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/09/"><span class="level-start"><span class="level-item">September 2024</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">August 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/06/"><span class="level-start"><span class="level-item">June 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/03/"><span class="level-start"><span class="level-item">March 2024</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/02/"><span class="level-start"><span class="level-item">February 2024</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ai/"><span class="tag">ai</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ansible/"><span class="tag">ansible</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/calico/"><span class="tag">calico</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cisco/"><span class="tag">cisco</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/container/"><span class="tag">container</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/containerd/"><span class="tag">containerd</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elasticsearch/"><span class="tag">elasticsearch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elk/"><span class="tag">elk</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/etcd/"><span class="tag">etcd</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/istio/"><span class="tag">istio</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jenkins/"><span class="tag">jenkins</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/k8s/"><span class="tag">k8s</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kafka/"><span class="tag">kafka</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/mysql/"><span class="tag">mysql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nexus/"><span class="tag">nexus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/prometheus/"><span class="tag">prometheus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/suse/"><span class="tag">suse</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/web/"><span class="tag">web</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/zookeeper/"><span class="tag">zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/"><span class="tag">面试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A6%96%E9%A1%B5/"><span class="tag">首页</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a><p class="is-size-7"><span>&copy; 2025 Warner Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

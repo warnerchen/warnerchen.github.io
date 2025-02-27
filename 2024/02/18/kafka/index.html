@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Kafka - Warner&#039;s Wiki</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Warner&#039;s Wiki"><meta name="msapplication-TileImage" content="/logo.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Warner&#039;s Wiki"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一、kafka架构kafka 是一个分布式的基于发布和订阅模式的消息队列（message queue），主要用于大数据实时处理领域。"><meta property="og:type" content="blog"><meta property="og:title" content="Kafka"><meta property="og:url" content="https://warnerchen.github.io/2024/02/18/kafka/"><meta property="og:site_name" content="Warner&#039;s Wiki"><meta property="og:description" content="一、kafka架构kafka 是一个分布式的基于发布和订阅模式的消息队列（message queue），主要用于大数据实时处理领域。"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/kafka/kafka%E5%9B%BE%E6%A0%87.jpeg"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/kafka/%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/kafka/%E5%BC%82%E6%AD%A5%E9%80%9A%E4%BF%A1.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/kafka/%E7%82%B9%E5%AF%B9%E7%82%B9%E6%A8%A1%E5%BC%8F.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/kafka/%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/kafka/kafka%E6%9E%B6%E6%9E%84.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/kafka/kafka%E5%AD%98%E5%82%A8%E6%9C%BA%E5%88%B6.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/kafka/kafka%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E5%8E%9F%E7%90%86.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/kafka/kafka-eagle.png"><meta property="article:published_time" content="2024-02-18T08:06:41.000Z"><meta property="article:modified_time" content="2025-02-26T23:37:00.000Z"><meta property="article:author" content="Warner Chen"><meta property="article:tag" content="kafka"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://warnerchen.github.io/2024/02/18/kafka/kafka%E5%9B%BE%E6%A0%87.jpeg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://warnerchen.github.io/2024/02/18/kafka/"},"headline":"Kafka","image":["https://warnerchen.github.io/2024/02/18/kafka/%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1.png","https://warnerchen.github.io/2024/02/18/kafka/%E5%BC%82%E6%AD%A5%E9%80%9A%E4%BF%A1.png","https://warnerchen.github.io/2024/02/18/kafka/%E7%82%B9%E5%AF%B9%E7%82%B9%E6%A8%A1%E5%BC%8F.png","https://warnerchen.github.io/2024/02/18/kafka/%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F.png","https://warnerchen.github.io/2024/02/18/kafka/kafka%E6%9E%B6%E6%9E%84.png","https://warnerchen.github.io/2024/02/18/kafka/kafka%E5%AD%98%E5%82%A8%E6%9C%BA%E5%88%B6.png","https://warnerchen.github.io/2024/02/18/kafka/kafka%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E5%8E%9F%E7%90%86.png","https://warnerchen.github.io/2024/02/18/kafka/kafka-eagle.png"],"datePublished":"2024-02-18T08:06:41.000Z","dateModified":"2025-02-26T23:37:00.000Z","author":{"@type":"Person","name":"Warner Chen"},"publisher":{"@type":"Organization","name":"Warner's Wiki","logo":{"@type":"ImageObject","url":"https://warnerchen.github.io/logo.jpg"}},"description":"一、kafka架构kafka 是一个分布式的基于发布和订阅模式的消息队列（message queue），主要用于大数据实时处理领域。"}</script><link rel="canonical" href="https://warnerchen.github.io/2024/02/18/kafka/"><link rel="icon" href="/logo.jpg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2024-02-18T08:06:41.000Z" title="18/02/2024, 4:06:41 pm">2024-02-18</time></span><span class="level-item">Updated&nbsp;<time dateTime="2025-02-26T23:37:00.000Z" title="27/02/2025, 7:37:00 am">2025-02-27</time></span><span class="level-item">35 minutes read (About 5303 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">Kafka</h1><div class="content"><h2 id="一、kafka架构"><a href="#一、kafka架构" class="headerlink" title="一、kafka架构"></a>一、kafka架构</h2><p>kafka 是一个分布式的基于<strong>发布和订阅模式</strong>的<strong>消息队列（message queue）</strong>，主要用于大数据实时处理领域。</p>
+<p><img src="/2024/02/18/kafka/kafka%E5%9B%BE%E6%A0%87.jpeg" alt="kafka图标"></p>
+<span id="more"></span>
+
+<h3 id="1-1-消息队列"><a href="#1-1-消息队列" class="headerlink" title="1.1 消息队列"></a>1.1 消息队列</h3><p><strong>同步通信</strong></p>
+<p><img src="/2024/02/18/kafka/%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1.png" alt="同步通信"></p>
+<p><strong>异步通信</strong></p>
+<p><img src="/2024/02/18/kafka/%E5%BC%82%E6%AD%A5%E9%80%9A%E4%BF%A1.png" alt="异步通信"></p>
+<p>使用消息队列的好处如下：</p>
+<ul>
+<li>解耦：允许独立的扩展或修改两边的处理过程</li>
+<li>可恢复性：系统的一部分组件失效时，不会影响到整个系统</li>
+<li>缓冲：控制和优化数据经过系统的速度</li>
+<li>灵活性和峰值处理能力：在特殊情况下，通信中的请求量会急剧增大（如双十一等活动），但这种情况并不常见，如果投入资源来待命是很浪费的，使用消息队列就可以顶住突发的访问压力，而保护集群不会因为请求量过多而崩溃</li>
+<li>异步通信：有时候用户不想也不需要立即处理消息，这种时候就允许用户把消息放在队列中，等待处理</li>
+</ul>
+<p>消息队列分为<strong>点对点模式</strong>和<strong>发布&#x2F;订阅模式</strong></p>
+<p><strong>点对点模式</strong></p>
+<p>消息生产者生产消息发送到 queue 中，消费者再从 queue 拉取消息并消费，消息被消费之后就不再存在于 queue 中，queue 可以有多个消费者，但对于消息而言只能有一个消费者。</p>
+<p><img src="/2024/02/18/kafka/%E7%82%B9%E5%AF%B9%E7%82%B9%E6%A8%A1%E5%BC%8F.png" alt="点对点模式"></p>
+<p><strong>发布&#x2F;订阅模式</strong></p>
+<p>消息生产者将消息发送到 topic 中，可以同时有多个消费者订阅该消息，发布到 topic 的消息可以被所有消费者订阅。</p>
+<p><img src="/2024/02/18/kafka/%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F.png" alt="发布订阅模式"></p>
+<h3 id="1-2-kafka基础架构"><a href="#1-2-kafka基础架构" class="headerlink" title="1.2 kafka基础架构"></a>1.2 kafka基础架构</h3><p>kafka 有四个核心的 API：</p>
+<ul>
+<li>The Producer API：允许一个应用程序发布一串流式的数据到一个或者多个 topic</li>
+<li>The Consumer API：允许一个应用程序订阅一个或多个 topic ，并且对发布给他们的流式数据进行处理</li>
+<li>The Streams API：允许一个应用程序作为一个流处理器，消费一个或者多个 topic 产生的输入流，然后生产一个输出流到一个或多个 topic 中去，在输入输出流中进行有效的转换</li>
+<li>The Connector API：允许构建并运行可重用的生产者或者消费者，将 topics 连接到已存在的应用程序或者数据系统</li>
+</ul>
+<p><img src="/2024/02/18/kafka/kafka%E6%9E%B6%E6%9E%84.png" alt="kafka架构"></p>
+<ul>
+<li>producer：消息生产者</li>
+<li>consumer：消息消费者</li>
+<li>topic：数据主题，是数据订阅&#x2F;发布的地方，可以被多个消费者订阅</li>
+<li>partition：分区，每个 topic 包含一个或多个分区，分区是一个有序的队列，分区中的消息都会被分配一个 offset，kafka 保证按每一个分区中的顺序将消息发送给消费者，但不保证按每一个 topic 中的顺序将消息发送给消费者；且 partition 是消费者和生产者操作的最小单元</li>
+<li>offset（偏移量）：kafka 的存储文件都是按照 offset.kafka 来命名，方便查找数据</li>
+<li>leader 副本：消息的订阅&#x2F;发布都由 leader 来完成</li>
+<li>follower 副本：进行消息数据的备份，当 leader 挂了之后，就成为新的 leader 来代替旧的 leader</li>
+<li>broker：一个 kafka 就是一个 broker，一个集群由多个 broker 组成</li>
+<li>consumer group：消费者组，组中有多个消费者，组中的消费者都只能够接收一个分区的消息</li>
+<li>zookeeper：保存 kafka 集群状态的信息，2.8.0版本开始支持 kraft 模式，可不依赖 zk 运行 kafka 集群</li>
+<li>replicas：副本数</li>
+</ul>
+<h3 id="1-3-kafka-存储机制"><a href="#1-3-kafka-存储机制" class="headerlink" title="1.3 kafka 存储机制"></a>1.3 kafka 存储机制</h3><p>kafka 内部会自己创建一个 _consumer_offsets 并包含 50 个分区，这些主题用来保存消费者消费某个 topic 的偏移量。</p>
+<p>每个 partitions 都被切割成相同大小的 segment，segment 由四个部分构成，具体如下：</p>
+<p><img src="/2024/02/18/kafka/kafka%E5%AD%98%E5%82%A8%E6%9C%BA%E5%88%B6.png" alt="kafka存储机制"></p>
+<ul>
+<li>log：数据文件</li>
+<li>index：索引文件，用来保存消息的索引，能够使查找数据更加高效</li>
+<li>timeindex：具体时间日志</li>
+<li>leader-epoch-checkpoint：保存了每一任  leader 开始写入消息时的 offset，会定时更新</li>
+</ul>
+<h3 id="1-4-生产者分区策略"><a href="#1-4-生产者分区策略" class="headerlink" title="1.4 生产者分区策略"></a>1.4 生产者分区策略</h3><p>kafka 允许为每条消息定义消息 key，可以根据 key 来为消息选择分区。</p>
+<p>分区策略即决定生产者将消息发送到哪个分区的算法，主要有以下几种：</p>
+<ul>
+<li>轮询策略（没给定分区号和 key 值）：可以提供优秀的负载均衡能力，保证消息被平均的分配到各个分区上，但不能保证消息的有序性。</li>
+<li>随即策略：瞎分，基本不用。</li>
+<li>hash 策略（没给定分区号，但给了 key 值）：将 key 的 hash 值与 topic 的 partition 数进行取余得到<br>partition值</li>
+<li>自定义分区</li>
+</ul>
+<h3 id="1-5-生产者ISR"><a href="#1-5-生产者ISR" class="headerlink" title="1.5 生产者ISR"></a>1.5 生产者ISR</h3><p>ISR 即同步副本，leader 维护了一个动态的 ISR，为 leader 保持同步的 follower 集合，当 ISR 中的 follower 完成数据的同步之后，leader 就会给 follower 发送 acks，如果 follower 长时间没有向 leader 同步数据，则该 follower 将被踢出 ISR。leader 发生故障之后就会在 ISR 中选取出新的 leader。</p>
+<h3 id="1-6-生产者ACKS"><a href="#1-6-生产者ACKS" class="headerlink" title="1.6 生产者ACKS"></a>1.6 生产者ACKS</h3><p>kafka 发送确认参数 acks 的几种模式：</p>
+<ul>
+<li>acks &#x3D; 0：意味着生产者能够通过网络把消息发送出去，broker 接收到数据还没写入就发送，容易丢数据</li>
+<li>acks &#x3D; 1：等待 leader 写入数据（不等待 follower 同步），就可以发送数据，可能会丢数据</li>
+<li>acks &#x3D; all&#x2F;-1：等待 leader 和 follower（ISR 中的）写入数据，就可以发送数据，数据不容易丢，但效率底</li>
+</ul>
+<h3 id="1-7-kafka数据一致性原理"><a href="#1-7-kafka数据一致性原理" class="headerlink" title="1.7 kafka数据一致性原理"></a>1.7 kafka数据一致性原理</h3><ul>
+<li>HW：所有副本中的最小 LEO</li>
+<li>LEO：每个副本的最后一个（最大的） offset</li>
+</ul>
+<p>假设分区的副本为3，副本0为 leader，副本1、2为 follower，并且都在 ISR 列表中。虽然 leader 已经写入了 message3，但消费者只能读到 message1，因为所有的 ISR 都同步了 message1，只有在 HW 之上的消息才支持被消费，而 HW 取决于 LEO，原理类似于木桶原理。</p>
+<p>这么做的原因是如果 leader 崩溃了，一个 follower 成为新的 leader 后，由于该新的 leader 没有做好数据的同步，如果允许消费者读取 HW 之下的数据的话，那么就会出现数据不一致的问题。</p>
+<p><img src="/2024/02/18/kafka/kafka%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E5%8E%9F%E7%90%86.png" alt="kafka数据一致性原理"></p>
+<h3 id="1-7-Exactly-once"><a href="#1-7-Exactly-once" class="headerlink" title="1.7 Exactly-once"></a>1.7 Exactly-once</h3><p>当生产者发送消息到 topic 时，很可能会出现宕机的情况，或者出现了网络故障，导致生产者消息发送失败，而生产者要如何处理这样的错误，就产生了如下几种不同的语义：</p>
+<ul>
+<li>At least once：至少一次，如果生产者收到了 broker 发送过来的 acks，且 acks 设置为了 all&#x2F;-1，这就代表消息已经被写入 topic 且同步好了。如果生产者在时间内没受到 acks 或收到的 acks 有误，那么就会重新发送消息。如果 broker 恰好在消息已经写入 topic 时，发送 acks 前出了故障，那么就会导致生产者发送同样的消息两次，消费者消费两次。</li>
+<li>At more once：最多一次，如果生产者在接收 acks 超时或返回有问题的时候不重新发送消息，那么消息很可能没写入 topic 中，因此消费者也不会消费该条消息，不会出现数据重复的现象，但很容易缺数据。</li>
+<li>Exactly once：精确一次，即使生产者重新发送消息，也只会被消费者消费一次，实际上就是在 kafka 集群中做一次去重的操作。kafka 集群会给生产者分配一个 PID，生产者每次发送消息到 broker 时都会附带 PID、分区以及序列号，broker 就会对数据做一个保存，如果生产者再发送同样消息，那么 broker 就会对数据进行去重，但如果生产者宕机重启了，就会被分配一个新的 PID，所以去重无法做到精准的数据写入。要开启 exactly-once，需要在 broker 中配置 <code>enable.idempotence = true</code> ，这时候 acks 默认被设置为 -1。</li>
+</ul>
+<h3 id="1-8-消费者分区分配策略"><a href="#1-8-消费者分区分配策略" class="headerlink" title="1.8 消费者分区分配策略"></a>1.8 消费者分区分配策略</h3><p>消费者是采用 pull 的方式在 kafka 集群中获取消息的。</p>
+<p>push 模式很难适应消费速率不同的消费者，因为消息的发送速率是由 broker 决定的；而 pull 方式当 kafka 集群没有数据的时候，消费者可能会陷入循环之中，一直取到空数据。</p>
+<p>一个消费者组里由多个消费者，一个 topic 里由多个分区，那么数据在消费的时候就会涉及到分配的问题，即确定那些分区由消费者组里的哪些消费者来消费。</p>
+<p>kakfa 有三种分配策略，如下：</p>
+<ul>
+<li>RangeAssignor（默认）：RangeAssignor 是针对 topic 而言的，首先会对 topic 中的分区按照序号进行排列，并对消费者根据字典序排列，然后用分区个数除以消费者线程的总数来决定分区的分配，但如果除不尽，那么前面的消费者就会多分配一些分区。</li>
+<li>RoundRobin：将消费组内所有消费者以及消费者所订阅的所有 topic 的 partition 按照字典序排序，然后通过轮询的方式逐个分配给组内的消费者。如果同时消费多个 topic，那么消费者会将这些 topic 视为一个。但如果同一个消费组内的消费者所订阅的信息是不相同的，那么在执行分区分配的时候就不是完全的轮询分配，有可能会导致分区分配的不均匀。</li>
+<li>StickyAssignor：StickyAssignor 要实现的是分区的分配要尽可能的均匀，分配给消费者者的主题分区数最多相差一个，假设一个消费者组有三个消费者，都订阅了四个 topic，且每个 topic 中有二个分区，那么这时候分配的结果与 RoundRobin 会很相似，即消费者A三个分区、消费者B三个分区、消费者C两个分区，假设消费者C退出了消费者组，这时候 StickyAssignor 会保留之前消费者A和B分配到的分区，然后再将消费者C之前分配到的分区再分配给消费者A和B，即体现了粘性，不需要消费者将之前处理过的数据送到新的消费者再处理一次。</li>
+</ul>
+<h3 id="1-9-offset存储"><a href="#1-9-offset存储" class="headerlink" title="1.9 offset存储"></a>1.9 offset存储</h3><p>kafka 在0.9版本之前，offset 是存储在 zk 中，在之后的版本则是存储在 kafka 内置的一个 topic 中，即 <code>_consumer_offsets</code>，一个 offset 提交的信息包括以下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Fields</th>
+<th align="center">Content</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Key</td>
+<td align="center">Consumer Group、Topic、Partition</td>
+</tr>
+<tr>
+<td align="center">Payload</td>
+<td align="center">Offset、Metadata、Timestamp</td>
+</tr>
+</tbody></table>
+<p>offset 的提交会根据消费者组的 key（GTP） 进行分区，对于一个给定的消费者，它所有的消息都会发送到唯一的 broker，这样消费者就不需要对多个 broker 拉取数据，但如果消费者组消费很多数量的分区，会对 broker 造成性能瓶颈。</p>
+<h3 id="1-10-kafka写机制"><a href="#1-10-kafka写机制" class="headerlink" title="1.10 kafka写机制"></a>1.10 kafka写机制</h3><ul>
+<li>顺序写入磁盘</li>
+<li>零拷贝</li>
+</ul>
+<h3 id="1-11-kafka-controller"><a href="#1-11-kafka-controller" class="headerlink" title="1.11 kafka-controller"></a>1.11 kafka-controller</h3><p>kafka 集群中会有一个 broker 被选举为 controller，用来负责管理 broker 的上下线，所有 topic 的分区、副本分配和 leader 选举等。</p>
+<h3 id="1-12-kafka事务"><a href="#1-12-kafka事务" class="headerlink" title="1.12 kafka事务"></a>1.12 kafka事务</h3><p>事务可以保证在 Exactly-Once 的基础上，生产和消费可以跨分区跨会话，即生产者在同一个事务内提交到多个分区的消息，要么同时提交成功，要么同时失败，这样就保证了生产者在运行时出现异常或宕机之后仍然成立。</p>
+<p><strong>生产者事务</strong></p>
+<p>为了实现跨分区跨会话的事务，需要引入全局唯一的 Transaction ID（由客户端给定），并将生产者的 PID 与之绑定，这样以来生产者即使宕机重启也可以与原来的 PID 进行绑定。</p>
+<p>为了管理 Transaction ID，kafka 中引入了一个新的组件 Transaction Coordinator，生产者就是与 Transaction Coordinator 交互来获得  Transaction ID 对应的任务状态。Transaction Coordinator 还负责将事务写入 topic，这样即使服务重启，也可以得到恢复。</p>
+<p><strong>消费者事务</strong></p>
+<p>事务主要是为生产者作保证，无法保证消费者的精准消费，是因为消费者可以根据 offset 来访问消息。</p>
+<h2 id="二、kafka基础"><a href="#二、kafka基础" class="headerlink" title="二、kafka基础"></a>二、kafka基础</h2><h3 id="2-1-kafka安装"><a href="#2-1-kafka安装" class="headerlink" title="2.1 kafka安装"></a>2.1 kafka安装</h3><p><strong>通过二进制包部署</strong></p>
+<ol>
+<li>下载 kafka</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -O https://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.8.0/kafka_2.13-2.8.0.tgz</span><br><span class="line">tar -xf kafka_2.13-2.8.0.tgz</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>修改 server.properties</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">broker的<span class="built_in">id</span>必须为唯一的整数，设置为-1时随机生成</span></span><br><span class="line">broker.id=-1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改为实际zookeeper节点地址+2181端口</span></span><br><span class="line">zookeeper.connect=...</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>开启 zookeeper 和 kafka</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">daemon参数:不输出启动日志信息</span></span><br><span class="line">./bin/zookeeper-server-start.sh -daemon ../config/zookeeper.properties</span><br><span class="line">./bin/kafka-server-start.sh -daemon ./config/server.properties</span><br></pre></td></tr></table></figure>
+
+<p><strong>通过 docker-compose 部署</strong></p>
+<ol>
+<li>docker-compose.yaml</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3.8&quot;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">zookeeper:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zookeeper</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.io/bitnami/zookeeper:3.7</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;12181:2181&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./data/zookeeper_data:/zookeeper_data&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ALLOW_ANONYMOUS_LOGIN=yes</span></span><br><span class="line">  <span class="attr">kafka1:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka1</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.io/bitnami/kafka:2.8.0</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;19092:9092&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./data/kafka1_data:/data&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ALLOW_PLAINTEXT_LISTENER=yes</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper</span></span><br><span class="line">  <span class="attr">kafka2:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka2</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.io/bitnami/kafka:2.8.0</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;19093:9092&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./data/kafka2_data:/data&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ALLOW_PLAINTEXT_LISTENER=yes</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper</span></span><br><span class="line">  <span class="attr">kafka3:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka3</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.io/bitnami/kafka:2.8.0</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;19094:9092&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./data/kafka3_data:/data&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ALLOW_PLAINTEXT_LISTENER=yes</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>进入 zookeeper 内部查看 brokers 是否存在</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">zkCli.sh</span><br><span class="line">ls /brokers/ids</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><strong>kraft 模式部署</strong></p>
+<ol>
+<li>kraft&#x2F;server.properties</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据节点数改</span></span><br><span class="line">node.id=1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">控制节点</span></span><br><span class="line">controller.quorum.voters=1@master:9093,2@slave1:9093,3@slave2:9093</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>生成集群ID</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/kafka-storage.sh random-uuid</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>生成 <code>/tmp/kraft-combined-logs</code> 目录</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/kafka-storage.sh format -t &lt;uuid&gt; -c ./config/kraft/server.properties</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>各节点启动 kafka</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/kafka-server-start.sh -daemon ./config/kraft/server.properties</span><br></pre></td></tr></table></figure>
+
+<p><strong>kraft 模式 docker-compose 部署</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3.8&quot;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">kafka1:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka1</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.io/bitnami/kafka:2.8.0</span></span><br><span class="line">    <span class="attr">command:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/bin/bash</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">-c</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">|</span></span><br><span class="line"><span class="string">          kafka-storage.sh format -t &lt;uuid&gt; -c /opt/bitnami/kafka/config/kraft/server.properties</span></span><br><span class="line"><span class="string">          kafka-server-start.sh /opt/bitnami/kafka/config/kraft/server.properties</span></span><br><span class="line"><span class="string"></span>    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;19092:9092&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./conf/kafka1:/opt/bitnami/kafka/config/kraft&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ALLOW_PLAINTEXT_LISTENER=yes</span></span><br><span class="line">  <span class="attr">kafka2:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka2</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.io/bitnami/kafka:2.8.0</span></span><br><span class="line">    <span class="attr">command:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/bin/bash</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">-c</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">|</span></span><br><span class="line"><span class="string">          kafka-storage.sh format -t &lt;uuid&gt; -c /opt/bitnami/kafka/config/kraft/server.properties</span></span><br><span class="line"><span class="string">          kafka-server-start.sh /opt/bitnami/kafka/config/kraft/server.properties</span></span><br><span class="line"><span class="string"></span>    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;19093:9092&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./conf/kafka2:/opt/bitnami/kafka/config/kraft&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ALLOW_PLAINTEXT_LISTENER=yes</span></span><br><span class="line">  <span class="attr">kafka3:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka3</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">docker.io/bitnami/kafka:2.8.0</span></span><br><span class="line">    <span class="attr">command:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/bin/bash</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">-c</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">|</span></span><br><span class="line"><span class="string">          kafka-storage.sh format -t &lt;uuid&gt; -c /opt/bitnami/kafka/config/kraft/server.properties</span></span><br><span class="line"><span class="string">          kafka-server-start.sh /opt/bitnami/kafka/config/kraft/server.properties</span></span><br><span class="line"><span class="string"></span>    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;19094:9092&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;./conf/kafka3:/opt/bitnami/kafka/config/kraft&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ALLOW_PLAINTEXT_LISTENER=yes</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-kafka基本使用"><a href="#2-2-kafka基本使用" class="headerlink" title="2.2 kafka基本使用"></a>2.2 kafka基本使用</h3><ol>
+<li>列出某个 zookeeper 中的 topic</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kafka-topics.sh --list --zookeeper zookeeper_ip:2181</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建 topic</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--replication-factor:副本数，总副本数为(分区数 * 副本数参数)，下面的例子总副本数为4</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--partitions:分区数</span></span><br><span class="line">./kafka-topics.sh --create --zookeeper zookeeper_ip:2181 --replication-factor 2 --partitions 2 --topic test</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>删除 topic</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">delete.topic.enable为<span class="literal">true</span>时才会真正删除</span></span><br><span class="line">./kafka-topics.sh --delete --zookeeper zookeeper_ip:2181 --topic test</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>查看 topic</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kafka-topics.sh --describe --zookeeper zookeeper_ip:2181 --topic test</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>启动 producer</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--broker-list:针对生产者使用，指定集群中的一个或者多个kafka服务器</span></span><br><span class="line">./kafka-console-producer.sh --broker-list kafka_id:9092 --topic test</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>启动 consumer</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--bootstrap-server:针对消费者使用，指定集群中的一个或者多个kafka服务器</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--from-beginning:查看所有消息数据</span></span><br><span class="line">./kafka-console-consumer.sh --bootstrap-server kafka_id:9092 --topic test --from-beginning</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-单播消息"><a href="#2-3-单播消息" class="headerlink" title="2.3 单播消息"></a>2.3 单播消息</h3><p>如果多个消费者在同一个消费者组，只有一个消费者可以收到同一个订阅的 topic 的消息。</p>
+<p>如果 topic 进行了分区，那么一个 partition 只能被消费者组内的一个消费者消费，但消费者可以消费多个不同的 partition，而这些 partition 也可以被不同消费者组的消费者消费。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--consumer-property group.id:指定该消费者从属于哪个消费者组</span></span><br><span class="line">./kafka-console-consumer.sh --bootstrap-server kafka_id:9092 --consumer-property group.id=testgroup --topic test </span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-多播消息"><a href="#2-4-多播消息" class="headerlink" title="2.4 多播消息"></a>2.4 多播消息</h3><p>如果多个不同消费者组中的消费者消费同一个订阅的 topic 的消息，那么这些消费者都可以消费同样的消息。</p>
+<h3 id="2-5-查看消费者组信息"><a href="#2-5-查看消费者组信息" class="headerlink" title="2.5 查看消费者组信息"></a>2.5 查看消费者组信息</h3><ol>
+<li>查看指定节点有哪些消费者组</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kafka-consumer-groups.sh --bootstrap-server kafka_id:9092 --list</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>查看消费者组详细信息</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">./kafka-consumer-groups.sh --bootstrap-server kafka_id:9092 --describe --group testgroup</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">CURRENT-OFFSET:上次消费消息偏移量</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">LOG-END-OFFSET:当前topic最后消息偏移量</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">LAG:未消费信息的数量</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-6-kafka集群操作"><a href="#2-6-kafka集群操作" class="headerlink" title="2.6 kafka集群操作"></a>2.6 kafka集群操作</h3><ol>
+<li>消息发送</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kafka-console-producer.sh --broker-list kafka_01:9092 kafka_02:9092 kafka_03:9092 --topic test</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>消息消费</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kafka-console-consumer.sh --bootstrap-server kafka_01:9092 kafka_02:9092 kafka_03:9092 --from-beginning --topic test</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>消费者组消费信息</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kafka-consumer-groups.sh --bootstrap-server kafka_01:9092 kafka_02:9092 kafka_03:9092 --from-beginning --consumer-property group.id=testgroup --topic test</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="三、kafka优化"><a href="#三、kafka优化" class="headerlink" title="三、kafka优化"></a>三、kafka优化</h2><h3 id="3-1-如何防止消息丢失"><a href="#3-1-如何防止消息丢失" class="headerlink" title="3.1 如何防止消息丢失"></a>3.1 如何防止消息丢失</h3><ul>
+<li>发送方：设置 ack 的值为 1 或 -1&#x2F;all</li>
+<li>消费方：设置 offset 为手动提交</li>
+</ul>
+<h3 id="3-2-如何防止消息的重复消费"><a href="#3-2-如何防止消息的重复消费" class="headerlink" title="3.2 如何防止消息的重复消费"></a>3.2 如何防止消息的重复消费</h3><p>如果 broker 收到了消息并发送了 ack 给生产者，因为网络原因生产者在一定时间内没有收到 ack 就会进行消息的重新发送，这样 broker 就会有两条一样的消息，就可能会造成消费者重复消费。</p>
+<p>在消费者端进行非幂等性（多次访问的结果是一样的）消费问题，就可以解决。</p>
+<ul>
+<li>方法一：在数据库中创建一个联合主键（id，uuid），这样只有联合主键匹配成功才能写入数据</li>
+<li>方法二：使用分布式锁，例如 Redission.lock（uuid）</li>
+</ul>
+<h3 id="3-3-如何做到顺序消费"><a href="#3-3-如何做到顺序消费" class="headerlink" title="3.3 如何做到顺序消费"></a>3.3 如何做到顺序消费</h3><p>顺序消费的使用场景并不多，因为会牺牲较多的性能。</p>
+<ul>
+<li>发送方：ack 不能设置为 0（否则可能会丢失消息），关闭重试并使用同步发送（重试可能会导致消息重复，异步发送会导致消息发送顺序不一致），消息发送成功后才会发送下一条，以保证消息的顺序发送</li>
+<li>消费方：消息都是发送到一个 partition 中，只能有一个消费者来消费该 partition 的消息</li>
+</ul>
+<h3 id="3-4-消息积压"><a href="#3-4-消息积压" class="headerlink" title="3.4 消息积压"></a>3.4 消息积压</h3><p>当消费者的消费速度远远跟不上生产者的消息生产速度，那么 kafka 中就会有大量的消息没有被消费，消费者寻址的性能也会越来越差，最后导致服务雪崩。</p>
+<ul>
+<li>方法一：使用多线程</li>
+<li>方法二：创建多个消费者组和多个消费者，一起消费</li>
+<li>方法三：创建一个消费者，该消费者新建一个 topic，并划分多个分区，多个分区再划分给多个消费者，这时候该消费者将消息拉取下来但不进行消费，而是放在新的 topic 上让多个消费者进行消费。</li>
+</ul>
+<h3 id="3-5-延时队列"><a href="#3-5-延时队列" class="headerlink" title="3.5 延时队列"></a>3.5 延时队列</h3><p>如果在订单创建成功后 30 分钟内没有付款，则自动取消订单，在这就可以通过延时队列来实现。</p>
+<p>方法：</p>
+<ul>
+<li>kafka 创建相应 topic</li>
+<li>消费者轮询消费该 topic 的消息</li>
+<li>消费者判断该 topic 的创建时间与当前时间是否超过 30 分钟（前提是订单未支付）<ul>
+<li>如果是：在数据库中修改订单状态为取消</li>
+<li>如果不是：记录当前消息的 offset，并不再继续消费</li>
+</ul>
+</li>
+</ul>
+<h2 id="四、kafka-eagle监控平台"><a href="#四、kafka-eagle监控平台" class="headerlink" title="四、kafka-eagle监控平台"></a>四、kafka-eagle监控平台</h2><ol>
+<li>下载 kafka-eagle</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -O https://github.com/smartloli/kafka-eagle-bin/archive/v2.0.8.tar.gz</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>修改 system-config.properties</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">zk地址</span></span><br><span class="line">efak.zk.cluster.alias=cluster1</span><br><span class="line">cluster1.zk.list=localhost:12181</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">mysql地址</span></span><br><span class="line">efak.driver=com.mysql.cj.jdbc.Driver</span><br><span class="line">efak.url=jdbc:mysql://127.0.0.1:3306/ke?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull</span><br><span class="line">efak.username=root</span><br><span class="line">efak.password=toortoor</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>修改环境变量</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/profile</span><br><span class="line">export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.302.b08-0.el7_9.x86_64</span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar.:$JAVA_HOME/lib/dt.jar.:$JAVA_HOME/lib/tools.jar</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin</span><br><span class="line">export KE_HOME=/root/kafka/kafka-eagle/efak-web-2.0.8</span><br><span class="line">export PATH=$PATH:$KE_HOME/bin</span><br><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>访问</li>
+</ol>
+<p><img src="/2024/02/18/kafka/kafka-eagle.png" alt="kafka-eagle"></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Kafka</p><p><a href="https://warnerchen.github.io/2024/02/18/kafka/">https://warnerchen.github.io/2024/02/18/kafka/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Warner Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2024-02-18</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2025-02-27</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/kafka/">kafka</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Buy me a coffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/02/18/cka/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">CKA</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/02/18/jenkins/"><span class="level-item">Jenkins</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">Comments</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/NUX_Octodex.gif" alt="Warner Chen"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Warner Chen</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shenzhen, Guangdong, CN</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives/"><p class="title">59</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags/"><p class="title">24</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/warnerchen/" target="_blank" rel="me noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://wiki.sanxian.tech/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sanxian</span></span><span class="level-right"><span class="level-item tag">wiki.sanxian.tech</span></span></a></li></ul></div></div></div><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-27T04:30:01.000Z">2025-02-27</time></p><p class="title"><a href="/2025/02/27/Ollama-Open-WebUI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">Ollama + Open WebUI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-24T03:03:53.000Z">2025-02-24</time></p><p class="title"><a href="/2025/02/24/%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F/">使用代理获取镜像</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-19T14:10:44.000Z">2025-02-19</time></p><p class="title"><a href="/2025/02/19/SUSE-AI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">SUSE AI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-13T03:37:54.000Z">2025-02-13</time></p><p class="title"><a href="/2025/02/13/RKE2-Cilium-%E9%85%8D%E7%BD%AE-Cluster-Mesh-%E5%AE%9E%E7%8E%B0%E8%B7%A8%E9%9B%86%E7%BE%A4%E9%80%9A%E4%BF%A1/">RKE2 Cilium 配置 Cluster Mesh 实现跨集群通信</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-10T08:32:32.000Z">2025-02-10</time></p><p class="title"><a href="/2025/02/10/Rancher-Monitoring-V2-Prometheus-PVC-%E6%89%A9%E5%AE%B9/">Rancher Monitoring V2 Prometheus PVC 扩容</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/02/"><span class="level-start"><span class="level-item">February 2025</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/01/"><span class="level-start"><span class="level-item">January 2025</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/12/"><span class="level-start"><span class="level-item">December 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">November 2024</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">October 2024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/09/"><span class="level-start"><span class="level-item">September 2024</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">August 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/06/"><span class="level-start"><span class="level-item">June 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/03/"><span class="level-start"><span class="level-item">March 2024</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/02/"><span class="level-start"><span class="level-item">February 2024</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ai/"><span class="tag">ai</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ansible/"><span class="tag">ansible</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/calico/"><span class="tag">calico</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cisco/"><span class="tag">cisco</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/container/"><span class="tag">container</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/containerd/"><span class="tag">containerd</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elasticsearch/"><span class="tag">elasticsearch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elk/"><span class="tag">elk</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/etcd/"><span class="tag">etcd</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/istio/"><span class="tag">istio</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jenkins/"><span class="tag">jenkins</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/k8s/"><span class="tag">k8s</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kafka/"><span class="tag">kafka</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/mysql/"><span class="tag">mysql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nexus/"><span class="tag">nexus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/prometheus/"><span class="tag">prometheus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/suse/"><span class="tag">suse</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/web/"><span class="tag">web</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/zookeeper/"><span class="tag">zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/"><span class="tag">面试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A6%96%E9%A1%B5/"><span class="tag">首页</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a><p class="is-size-7"><span>&copy; 2025 Warner Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>MySQL - Warner&#039;s Wiki</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Warner&#039;s Wiki"><meta name="msapplication-TileImage" content="/logo.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Warner&#039;s Wiki"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="MySQL 是一款关系型数据库管理系统。"><meta property="og:type" content="blog"><meta property="og:title" content="MySQL"><meta property="og:url" content="https://warnerchen.github.io/2024/02/18/mysql/"><meta property="og:site_name" content="Warner&#039;s Wiki"><meta property="og:description" content="MySQL 是一款关系型数据库管理系统。"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/logo.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/leftjoin.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/rightjoin.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E6%9F%A5%E8%AF%A2%E7%BC%BA%E8%80%83%E5%90%8C%E5%AD%A6.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E6%9F%A5%E8%AF%A2%E5%AD%A6%E7%94%9F%E5%AF%B9%E5%BA%94%E5%AD%A6%E7%A7%91%E6%88%90%E7%BB%A9.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E8%87%AA%E8%BF%9E%E6%8E%A5.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E6%8E%92%E5%BA%8F.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E5%88%86%E9%A1%B5%E7%AC%AC%E4%B8%80%E9%A1%B5.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E5%88%86%E9%A1%B5%E7%AC%AC%E4%BA%8C%E9%A1%B5.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E6%9F%A5%E8%AF%A2%E8%AF%AD%E6%96%87%E6%88%90%E7%BB%A9%E5%89%8D%E4%B8%89%E5%90%8D.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E5%AD%90%E6%9F%A5%E8%AF%A2.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E6%B5%81%E7%A8%8B%E5%9B%BE.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/mycat%E6%9E%B6%E6%9E%84.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/mycat%E6%B5%8B%E8%AF%95%E4%B8%80.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/mycat%E6%B5%8B%E8%AF%95%E4%BA%8C.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/haproxy%E7%95%8C%E9%9D%A2.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/keepalived%E6%B5%8B%E8%AF%95%E4%B8%80.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/keepalived%E6%B5%8B%E8%AF%95%E4%BA%8C.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/mysql/keepalived%E6%B5%8B%E8%AF%95%E4%B8%89.png"><meta property="article:published_time" content="2024-02-18T08:06:41.000Z"><meta property="article:modified_time" content="2025-02-26T23:37:00.000Z"><meta property="article:author" content="Warner Chen"><meta property="article:tag" content="mysql"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://warnerchen.github.io/2024/02/18/mysql/logo.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://warnerchen.github.io/2024/02/18/mysql/"},"headline":"MySQL","image":["https://warnerchen.github.io/2024/02/18/mysql/logo.png","https://warnerchen.github.io/2024/02/18/mysql/leftjoin.png","https://warnerchen.github.io/2024/02/18/mysql/rightjoin.png","https://warnerchen.github.io/2024/02/18/mysql/%E6%9F%A5%E8%AF%A2%E7%BC%BA%E8%80%83%E5%90%8C%E5%AD%A6.png","https://warnerchen.github.io/2024/02/18/mysql/%E6%9F%A5%E8%AF%A2%E5%AD%A6%E7%94%9F%E5%AF%B9%E5%BA%94%E5%AD%A6%E7%A7%91%E6%88%90%E7%BB%A9.png","https://warnerchen.github.io/2024/02/18/mysql/%E8%87%AA%E8%BF%9E%E6%8E%A5.png","https://warnerchen.github.io/2024/02/18/mysql/%E6%8E%92%E5%BA%8F.png","https://warnerchen.github.io/2024/02/18/mysql/%E5%88%86%E9%A1%B5%E7%AC%AC%E4%B8%80%E9%A1%B5.png","https://warnerchen.github.io/2024/02/18/mysql/%E5%88%86%E9%A1%B5%E7%AC%AC%E4%BA%8C%E9%A1%B5.png","https://warnerchen.github.io/2024/02/18/mysql/%E6%9F%A5%E8%AF%A2%E8%AF%AD%E6%96%87%E6%88%90%E7%BB%A9%E5%89%8D%E4%B8%89%E5%90%8D.png","https://warnerchen.github.io/2024/02/18/mysql/%E5%AD%90%E6%9F%A5%E8%AF%A2.png","https://warnerchen.github.io/2024/02/18/mysql/%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E6%B5%81%E7%A8%8B%E5%9B%BE.png","https://warnerchen.github.io/2024/02/18/mysql/mycat%E6%9E%B6%E6%9E%84.png","https://warnerchen.github.io/2024/02/18/mysql/mycat%E6%B5%8B%E8%AF%95%E4%B8%80.png","https://warnerchen.github.io/2024/02/18/mysql/mycat%E6%B5%8B%E8%AF%95%E4%BA%8C.png","https://warnerchen.github.io/2024/02/18/mysql/%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png","https://warnerchen.github.io/2024/02/18/mysql/haproxy%E7%95%8C%E9%9D%A2.png","https://warnerchen.github.io/2024/02/18/mysql/keepalived%E6%B5%8B%E8%AF%95%E4%B8%80.png","https://warnerchen.github.io/2024/02/18/mysql/keepalived%E6%B5%8B%E8%AF%95%E4%BA%8C.png","https://warnerchen.github.io/2024/02/18/mysql/keepalived%E6%B5%8B%E8%AF%95%E4%B8%89.png"],"datePublished":"2024-02-18T08:06:41.000Z","dateModified":"2025-02-26T23:37:00.000Z","author":{"@type":"Person","name":"Warner Chen"},"publisher":{"@type":"Organization","name":"Warner's Wiki","logo":{"@type":"ImageObject","url":"https://warnerchen.github.io/logo.jpg"}},"description":"MySQL 是一款关系型数据库管理系统。"}</script><link rel="canonical" href="https://warnerchen.github.io/2024/02/18/mysql/"><link rel="icon" href="/logo.jpg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2024-02-18T08:06:41.000Z" title="18/02/2024, 4:06:41 pm">2024-02-18</time></span><span class="level-item">Updated&nbsp;<time dateTime="2025-02-26T23:37:00.000Z" title="27/02/2025, 7:37:00 am">2025-02-27</time></span><span class="level-item">41 minutes read (About 6095 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">MySQL</h1><div class="content"><p>MySQL 是一款关系型数据库管理系统。</p>
+<p><img src="/2024/02/18/mysql/logo.png" alt="logo"></p>
+<span id="more"></span>
+
+<h2 id="一、MySQL基础"><a href="#一、MySQL基础" class="headerlink" title="一、MySQL基础"></a>一、MySQL基础</h2><h3 id="1-1-安装MySQL"><a href="#1-1-安装MySQL" class="headerlink" title="1.1 安装MySQL"></a>1.1 安装MySQL</h3><p><strong>docker-compose</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:5.7.35</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">--default-authentication-plugin=mysql_native_password</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">3306</span><span class="string">:3306</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">toortoor</span></span><br><span class="line">    </span><br><span class="line">  <span class="attr">adminer:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">adminer:latest</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8080</span><span class="string">:8080</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-基础SQL语句"><a href="#1-2-基础SQL语句" class="headerlink" title="1.2 基础SQL语句"></a>1.2 基础SQL语句</h3><ol>
+<li>刷新权限</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>数据库基本操作</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建</span></span><br><span class="line"><span class="keyword">create</span> database [if <span class="keyword">not</span> <span class="keyword">exists</span>] `db_name`;</span><br><span class="line"><span class="comment">-- 删除</span></span><br><span class="line"><span class="keyword">drop</span> database [if <span class="keyword">exists</span>] `db_name`;</span><br><span class="line"><span class="comment">-- 使用</span></span><br><span class="line">use `db_name`;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>表基本操作</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建</span></span><br><span class="line"><span class="keyword">create table</span> [if <span class="keyword">not</span> <span class="keyword">exists</span>] `table_name`;</span><br><span class="line"><span class="comment">-- 删除</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> [if <span class="keyword">exists</span>] `table_name`;</span><br><span class="line"><span class="comment">-- 查看</span></span><br><span class="line"><span class="keyword">describe</span> `table_name`;</span><br><span class="line"><span class="comment">-- 创建一个学生表</span></span><br><span class="line"><span class="keyword">create table</span> if <span class="keyword">not</span> <span class="keyword">exists</span> `students`(</span><br><span class="line">    <span class="comment">-- 创建id列，数据类型为4位的int类型，不允许为空，自增 </span></span><br><span class="line">    `id` <span class="type">int</span>(<span class="number">4</span>) <span class="keyword">not null</span> auto_increment comment <span class="string">&#x27;学号&#x27;</span>,</span><br><span class="line">    <span class="comment">-- 创建name列，数据类型为30位的varchar类型，不允许为空，默认值为匿名</span></span><br><span class="line">    `name` <span class="type">varchar</span>(<span class="number">30</span>) <span class="keyword">not null</span> <span class="keyword">default</span> <span class="string">&#x27;匿名&#x27;</span> comment <span class="string">&#x27;姓名&#x27;</span>,</span><br><span class="line">    `pwd` <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">not null</span> <span class="keyword">default</span> <span class="string">&#x27;123456&#x27;</span> comment <span class="string">&#x27;密码&#x27;</span>,</span><br><span class="line">    `gender` <span class="type">varchar</span>(<span class="number">2</span>) <span class="keyword">not null</span> <span class="keyword">default</span> <span class="string">&#x27;女&#x27;</span> comment <span class="string">&#x27;性别&#x27;</span>,</span><br><span class="line">    <span class="comment">-- 创建birthday列，datetime类型，默认为空</span></span><br><span class="line">    `brithday` datetime <span class="keyword">default</span> <span class="keyword">null</span> comment <span class="string">&#x27;出生日期&#x27;</span>,</span><br><span class="line">    `address` <span class="type">varchar</span>(<span class="number">100</span>) <span class="keyword">default</span> <span class="keyword">null</span> comment <span class="string">&#x27;家庭住址&#x27;</span>,</span><br><span class="line">    `email` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">default</span> <span class="keyword">null</span> comment <span class="string">&#x27;邮箱&#x27;</span>,</span><br><span class="line">    <span class="comment">-- 设置主键，一般一个表只有一个主键</span></span><br><span class="line">    <span class="keyword">primary key</span>(`id`)</span><br><span class="line">)</span><br><span class="line"><span class="comment">-- 设置引擎</span></span><br><span class="line">engine<span class="operator">=</span>innodb</span><br><span class="line"><span class="comment">-- 默认编码</span></span><br><span class="line"><span class="keyword">default</span> charset<span class="operator">=</span>utf8;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>修改表</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 修改表名称</span></span><br><span class="line"><span class="keyword">alter table</span> `table_name` rename <span class="keyword">as</span> new_`table_name`;</span><br><span class="line"><span class="comment">-- 增加字段</span></span><br><span class="line"><span class="keyword">alter table</span> `table_name` <span class="keyword">add</span> age <span class="type">int</span>(<span class="number">10</span>);</span><br><span class="line"><span class="comment">-- 修改约束</span></span><br><span class="line"><span class="keyword">alter table</span> `table_name` modify age <span class="type">varchar</span>(<span class="number">10</span>);</span><br><span class="line"><span class="comment">-- 重命名字段</span></span><br><span class="line"><span class="keyword">alter table</span> `table_name` change age new_age <span class="type">int</span>(<span class="number">10</span>);</span><br><span class="line"><span class="comment">-- 删除字段</span></span><br><span class="line"><span class="keyword">alter table</span> `table_name` <span class="keyword">drop</span> age;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>查看创建语句</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">create</span> database `db_name`;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">create table</span> `table_name`;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-引擎INNODB和MYISAM区别"><a href="#1-3-引擎INNODB和MYISAM区别" class="headerlink" title="1.3 引擎INNODB和MYISAM区别"></a>1.3 引擎INNODB和MYISAM区别</h3><table>
+<thead>
+<tr>
+<th align="center">特性</th>
+<th align="center">INNODB</th>
+<th align="center">MYISAM</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">事务</td>
+<td align="center">支持</td>
+<td align="center">不支持</td>
+</tr>
+<tr>
+<td align="center">数据行锁定</td>
+<td align="center">支持</td>
+<td align="center">不支持</td>
+</tr>
+<tr>
+<td align="center">外键</td>
+<td align="center">支持</td>
+<td align="center">不支持</td>
+</tr>
+<tr>
+<td align="center">全文索引</td>
+<td align="center">不支持</td>
+<td align="center">支持</td>
+</tr>
+<tr>
+<td align="center">空间占用</td>
+<td align="center">约为MYSIAM的2倍</td>
+<td align="center">较小</td>
+</tr>
+</tbody></table>
+<p><strong>不同引擎在文件上的区别</strong></p>
+<ul>
+<li>innodb：<ul>
+<li><code>*.frm</code>：表结构定义文件</li>
+<li><code>ibdata1</code>：数据文件</li>
+</ul>
+</li>
+<li>mysiam：<ul>
+<li><code>*.frm</code>：表结构定义文件</li>
+<li><code>*.MYD</code>：数据文件</li>
+<li><code>*.MYI</code>：索引文件</li>
+</ul>
+</li>
+</ul>
+<h2 id="二、MySQL数据操作"><a href="#二、MySQL数据操作" class="headerlink" title="二、MySQL数据操作"></a>二、MySQL数据操作</h2><h3 id="2-1-外键"><a href="#2-1-外键" class="headerlink" title="2.1 外键"></a>2.1 外键</h3><p>外键就是一个表的某一列去引用另一个表的某一列</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 该示例为students中的grade_id列引用grade中的grade_id列</span></span><br><span class="line"><span class="keyword">create table</span> `grade`(</span><br><span class="line">    `grade_id` <span class="type">int</span>(<span class="number">10</span>) <span class="keyword">not null</span> auto_increment comment <span class="string">&#x27;年级&#x27;</span></span><br><span class="line">    <span class="keyword">primary key</span>(`grade_id`)</span><br><span class="line">)engine<span class="operator">=</span>innodb <span class="keyword">default</span> charset<span class="operator">=</span>utf8</span><br><span class="line"></span><br><span class="line"><span class="keyword">create table</span> `students`(  </span><br><span class="line">    `id` <span class="type">int</span>(<span class="number">4</span>) <span class="keyword">not null</span> auto_increment comment <span class="string">&#x27;学号&#x27;</span>,</span><br><span class="line">    `name` <span class="type">varchar</span>(<span class="number">30</span>) <span class="keyword">not null</span> <span class="keyword">default</span> <span class="string">&#x27;匿名&#x27;</span> comment <span class="string">&#x27;姓名&#x27;</span>,</span><br><span class="line">    `grade_id` <span class="type">int</span>(<span class="number">10</span>) <span class="keyword">not null</span> comment <span class="string">&#x27;年级&#x27;</span>,</span><br><span class="line">    <span class="keyword">primary key</span>(`id`),</span><br><span class="line">    <span class="comment">-- 定义外键</span></span><br><span class="line">    key `FK_grade_id` (`grade_id`),</span><br><span class="line">    <span class="comment">-- 给外键添加约束</span></span><br><span class="line">    <span class="keyword">constraint</span> `FK_grade_id` <span class="keyword">foreign key</span> (`grade_id`) <span class="keyword">references</span> `grade` (`grade_id`)</span><br><span class="line">)engine<span class="operator">=</span>innodb <span class="keyword">default</span> charset<span class="operator">=</span>utf8</span><br></pre></td></tr></table></figure>
+
+<p>如果要给已经存在的表添加外键</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter table</span> `table_name` <span class="keyword">add constraint</span> `FK_name` <span class="keyword">foreign key</span> (`列名称`) <span class="keyword">references</span> `引用的表名` (`引用的列名称`)</span><br></pre></td></tr></table></figure>
+
+<p>删除外键</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter table</span> `table_name` <span class="keyword">drop</span> <span class="keyword">foreign key</span> <span class="string">&#x27;FK_name&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-DML数据操纵语言"><a href="#2-2-DML数据操纵语言" class="headerlink" title="2.2 DML数据操纵语言"></a>2.2 DML数据操纵语言</h3><h4 id="2-2-1-insert"><a href="#2-2-1-insert" class="headerlink" title="2.2.1 insert"></a>2.2.1 insert</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert into</span> `table_name`(`字段<span class="number">1</span>`,`字段<span class="number">2</span>`,`字段<span class="number">3</span>`) <span class="keyword">values</span>(<span class="string">&#x27;值1&#x27;</span>),(<span class="string">&#x27;值2&#x27;</span>),(<span class="string">&#x27;值3&#x27;</span>);</span><br><span class="line"><span class="keyword">insert into</span> `students`(`name`) <span class="keyword">values</span>(<span class="string">&#x27;cqm&#x27;</span>),(<span class="string">&#x27;lwt&#x27;</span>);</span><br><span class="line"><span class="comment">-- 字段可以省略，但后面的值必须一一对应</span></span><br><span class="line"><span class="keyword">insert into</span> `students`(`name`,`pwd`,`email`) <span class="keyword">values</span>(<span class="string">&#x27;lwt&#x27;</span>,<span class="string">&#x27;111&#x27;</span>,<span class="string">&#x27;lwt@qq.com&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-2-update"><a href="#2-2-2-update" class="headerlink" title="2.2.2 update"></a>2.2.2 update</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 如果不指定条件，那么会修改所有的值</span></span><br><span class="line"><span class="keyword">update</span> `table_name` <span class="keyword">set</span> `字段`<span class="operator">=</span><span class="string">&#x27;值&#x27;</span> <span class="keyword">where</span> 条件;</span><br><span class="line"><span class="comment">-- 条件可以是 =|&lt;|&gt;|!=|between|and|or 等等</span></span><br><span class="line"><span class="keyword">update</span> `students` <span class="keyword">set</span> `name`<span class="operator">=</span><span class="string">&#x27;handsome_cqm&#x27;</span> <span class="keyword">where</span> `id`<span class="operator">=</span><span class="number">1</span>;</span><br><span class="line"><span class="keyword">update</span> `students` <span class="keyword">set</span> `name`<span class="operator">=</span><span class="string">&#x27;cqm&#x27;</span> <span class="keyword">where</span> `name`<span class="operator">=</span><span class="string">&#x27;handsome_cqm&#x27;</span></span><br><span class="line"><span class="keyword">update</span> `students` <span class="keyword">set</span> `name`<span class="operator">=</span><span class="string">&#x27;newlwt&#x27;</span>,`email`<span class="operator">=</span><span class="string">&#x27;new@qq.com&#x27;</span> <span class="keyword">where</span> `name`<span class="operator">=</span><span class="string">&#x27;lwt&#x27;</span>;</span><br><span class="line"><span class="keyword">update</span> `students` <span class="keyword">set</span> `name`<span class="operator">=</span><span class="string">&#x27;cqm&#x27;</span> <span class="keyword">where</span> id <span class="keyword">between</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-3-delete"><a href="#2-2-3-delete" class="headerlink" title="2.2.3 delete"></a>2.2.3 delete</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> `table_name` <span class="keyword">where</span> 条件;</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> `students` <span class="keyword">where</span> `id`<span class="operator">=</span><span class="number">1</span>;</span><br><span class="line"><span class="comment">-- 清空表</span></span><br><span class="line"><span class="keyword">truncate</span> `table_name`;</span><br></pre></td></tr></table></figure>
+
+<p><strong>delete</strong> 和 <strong>truncate</strong> 区别：</p>
+<ul>
+<li>都可以清空表，都不会删除表结构</li>
+<li><strong>truncate</strong> 可以重置自增列，且不会影响事务</li>
+<li><strong>delete</strong> 清空表后，如果引擎是 <strong>innodb</strong>，重启数据库自增列就会变回1，因为是存储在内存中的；如果引擎是 <strong>myisam</strong>，则不会，因为是存储在文件中的</li>
+</ul>
+<h3 id="2-3-DQL数据库查询语言"><a href="#2-3-DQL数据库查询语言" class="headerlink" title="2.3 DQL数据库查询语言"></a>2.3 DQL数据库查询语言</h3><h4 id="2-3-1-select"><a href="#2-3-1-select" class="headerlink" title="2.3.1 select"></a>2.3.1 select</h4><ol>
+<li>查询所有数据</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> `table_name`;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>查询某列数据</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> `name`,`gander` <span class="keyword">from</span> `students`;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>给字段结果起别名</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> `name` <span class="keyword">as</span> <span class="string">&#x27;姓名&#x27;</span>,`gender` <span class="keyword">as</span> <span class="string">&#x27;性别&#x27;</span> <span class="keyword">from</span> `students`;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>concat 函数</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> concat(<span class="string">&#x27;姓名：&#x27;</span>,`name`) <span class="keyword">from</span> `students`;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>去重</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> `字段` <span class="keyword">from</span> `table_name`</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>批量操作数据</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> `score`<span class="operator">+</span><span class="number">1</span> <span class="keyword">as</span> `new_score` <span class="keyword">from</span> `table_name`;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-2-where"><a href="#2-3-2-where" class="headerlink" title="2.3.2 where"></a>2.3.2 where</h4><ol>
+<li>逻辑运算符运用</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> `score` <span class="keyword">from</span> `table_name` <span class="keyword">where</span> `score` <span class="operator">&gt;=</span> <span class="number">95</span> <span class="keyword">and</span> `score` <span class="operator">&lt;=</span> <span class="number">100</span>;</span><br><span class="line"><span class="keyword">select</span> `score` <span class="keyword">from</span> `table_name` <span class="keyword">where</span> `score` <span class="keyword">between</span> <span class="number">95</span> <span class="keyword">and</span> <span class="number">100</span>;</span><br><span class="line"><span class="keyword">select</span> `score` <span class="keyword">from</span> `table_name` <span class="keyword">where</span> <span class="keyword">not</span> `score` <span class="operator">!=</span> <span class="number">95</span> <span class="keyword">and</span> `score` <span class="operator">!=</span> <span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>模糊查询</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th align="center">运算符</th>
+<th align="center">语法</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">is null</td>
+<td align="center">a is null</td>
+<td align="center">a 为空，结果为真</td>
+</tr>
+<tr>
+<td align="center">is not null</td>
+<td align="center">a is not null</td>
+<td align="center">a 不为空，结果为真</td>
+</tr>
+<tr>
+<td align="center">between</td>
+<td align="center">a between b and c</td>
+<td align="center">若 a 在 b 和 c 之间，结果为真</td>
+</tr>
+<tr>
+<td align="center">like</td>
+<td align="center">a like b</td>
+<td align="center">如果 a 匹配 b，结果为真</td>
+</tr>
+<tr>
+<td align="center">in</td>
+<td align="center">a in ( b,c,d,e )</td>
+<td align="center">如果 a 在某个集合中的值相同，结果为真</td>
+</tr>
+</tbody></table>
+<p>查找花名册中姓陈的名字</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- %:匹配一个或多个字符</span></span><br><span class="line"><span class="comment">-- _:匹配一个字符</span></span><br><span class="line"><span class="keyword">select</span> `name` <span class="keyword">from</span> `table_name` <span class="keyword">where</span> `name` <span class="keyword">like</span> <span class="string">&#x27;陈%&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> `name` <span class="keyword">from</span> `table_name` <span class="keyword">where</span> `name` <span class="keyword">like</span> <span class="string">&#x27;陈_明&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>查找特定学号的信息</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> `name` <span class="keyword">from</span> `table_name` <span class="keyword">where</span> `id` <span class="keyword">in</span> (<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+
+<p>查找地址为空或不空的同学</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> `name` <span class="keyword">from</span> `table_name` <span class="keyword">where</span> `address` <span class="keyword">is</span> <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">select</span> `name` <span class="keyword">from</span> `table_name` <span class="keyword">where</span> `address` <span class="keyword">is</span> <span class="keyword">not null</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-3-联表查询"><a href="#2-3-3-联表查询" class="headerlink" title="2.3.3 联表查询"></a>2.3.3 联表查询</h4><p>联表查询包括：</p>
+<ul>
+<li>inner（内连接）：如果表中有至少一个匹配，则返回行</li>
+<li>left（外连接）：即使右表中没有匹配，也从左表返回所有的行</li>
+<li>right（外连接）：即使左表中没有匹配，也从右表返回所有的行</li>
+<li>full（外连接）：只要其中一个表中存在匹配，则返回行</li>
+</ul>
+<p><strong>inner</strong> 实际就是取两个表的交集，例如有两个表，一个表有学生的基本信息，另一个表有学生的成绩，两个表都有学生的学号列，那么就可以联合起来查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> `name`,`subjectno`,`score` <span class="keyword">from</span> `students` <span class="keyword">inner</span> <span class="keyword">join</span> `<span class="keyword">result</span>` <span class="keyword">where</span> student.id <span class="operator">=</span> result.id</span><br></pre></td></tr></table></figure>
+
+<p><strong>left</strong> 假设学生表中有 ccc 这么一个学生，但成绩表里没有 ccc 学生的成绩，如果使用了左连接，左表是学生表，右表是成绩表，那么也会返回 cqm 学生的值，显示为空</p>
+<p><img src="/2024/02/18/mysql/leftjoin.png" alt="leftjoin"></p>
+<p><strong>right</strong> 相反，如果成绩表里有个 ddd 学生的成绩，但学生表里没有这个学生的信息，如果使用了右连接，左表是学生表，右表是成绩表，那么也会返回 ddd 学生的成绩，注意这时候就看不到 ccc 学生的成绩信息了，因为左表中没有 ccc 学生的成绩信息</p>
+<p><img src="/2024/02/18/mysql/rightjoin.png" alt="rightjoin"></p>
+<p>通过联表查询就可以查出缺考的同学</p>
+<p><img src="/2024/02/18/mysql/%E6%9F%A5%E8%AF%A2%E7%BC%BA%E8%80%83%E5%90%8C%E5%AD%A6.png" alt="查询缺考同学"></p>
+<p>查询参加考试了的同学信息</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> `name` <span class="keyword">from</span> `students` <span class="keyword">right</span> <span class="keyword">join</span> `<span class="keyword">result</span>` <span class="keyword">on</span> students.id <span class="operator">=</span> result.id <span class="keyword">where</span> `score` <span class="keyword">is</span> <span class="keyword">not null</span>;</span><br></pre></td></tr></table></figure>
+
+<p>查询参加了考试的同学以及所对应的学科成绩</p>
+<p><img src="/2024/02/18/mysql/%E6%9F%A5%E8%AF%A2%E5%AD%A6%E7%94%9F%E5%AF%B9%E5%BA%94%E5%AD%A6%E7%A7%91%E6%88%90%E7%BB%A9.png" alt="查询学生对应学科成绩"></p>
+<h4 id="2-3-4-where和on的区别"><a href="#2-3-4-where和on的区别" class="headerlink" title="2.3.4 where和on的区别"></a>2.3.4 where和on的区别</h4><p>在进行联表查询的时候，数据库都会在中间生成一张临时表，在使用外连接时，on 和 where 区别如下：</p>
+<ul>
+<li><strong>on</strong> 条件是在生成临时表时使用的条件，它不管 <strong>on</strong> 中的条件是否为真，都会返回左边表中的记录。</li>
+<li><strong>where</strong> 条件是在临时表生成好后，再对临时表进行过滤的条件。这时已经没有 <strong>left join</strong> 的含义（必须返回左边表的记录）了，条件不为真的就全部过滤掉。</li>
+<li>如果是 <strong>inner join</strong>，则无区别</li>
+</ul>
+<h4 id="2-3-5-自连接"><a href="#2-3-5-自连接" class="headerlink" title="2.3.5 自连接"></a>2.3.5 自连接</h4><p>自连接实际上就是一张表与自己连接，将一张表拆为两张表</p>
+<p><strong>原表</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">categoryid</th>
+<th align="center">pid</th>
+<th align="center">categoryname</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">计算机科学与技术学院</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">1</td>
+<td align="center">心理学院</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">1</td>
+<td align="center">体育学院</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">2</td>
+<td align="center">python</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">3</td>
+<td align="center">心理学</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">4</td>
+<td align="center">短跑</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">4</td>
+<td align="center">篮球</td>
+</tr>
+</tbody></table>
+<p><strong>父类表</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">category</th>
+<th align="center">categoryname</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">2</td>
+<td align="center">计算机科学与技术学院</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">心理学院</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">体育学院</td>
+</tr>
+</tbody></table>
+<p><strong>子类表</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">category</th>
+<th align="center">所属父类</th>
+<th align="center">categoryname</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">5</td>
+<td align="center">计算机科学与技术学院</td>
+<td align="center">python</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">心理学院</td>
+<td align="center">心理学</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">体育学院</td>
+<td align="center">短跑</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">体育学院</td>
+<td align="center">篮球</td>
+</tr>
+</tbody></table>
+<p><strong>自查询结果</strong></p>
+<p><img src="/2024/02/18/mysql/%E8%87%AA%E8%BF%9E%E6%8E%A5.png" alt="自连接"></p>
+<h4 id="2-3-6-分页和排序"><a href="#2-3-6-分页和排序" class="headerlink" title="2.3.6 分页和排序"></a>2.3.6 分页和排序</h4><p><strong>排序 order by</strong></p>
+<ul>
+<li>desc：降序</li>
+<li>asc：升序</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 语法</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">desc</span><span class="operator">|</span><span class="keyword">asc</span></span><br></pre></td></tr></table></figure>
+
+<p>查询语文成绩并排序</p>
+<p><img src="/2024/02/18/mysql/%E6%8E%92%E5%BA%8F.png" alt="排序"></p>
+<p><strong>分页 limit</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 语法</span></span><br><span class="line">limit 起始值,页面显示多少条数据</span><br></pre></td></tr></table></figure>
+
+<p>打印第一页语文成绩</p>
+<p><img src="/2024/02/18/mysql/%E5%88%86%E9%A1%B5%E7%AC%AC%E4%B8%80%E9%A1%B5.png" alt="分页第一页"></p>
+<p>打印第二页数学成绩</p>
+<p><img src="/2024/02/18/mysql/%E5%88%86%E9%A1%B5%E7%AC%AC%E4%BA%8C%E9%A1%B5.png" alt="分页第二页"></p>
+<p>分页和排序配合起来就可以查询学生的前几名成绩，例如语文成绩前三名</p>
+<p><img src="/2024/02/18/mysql/%E6%9F%A5%E8%AF%A2%E8%AF%AD%E6%96%87%E6%88%90%E7%BB%A9%E5%89%8D%E4%B8%89%E5%90%8D.png" alt="查询语文成绩前三名"></p>
+<h4 id="2-3-7-子查询"><a href="#2-3-7-子查询" class="headerlink" title="2.3.7 子查询"></a>2.3.7 子查询</h4><p>本质上就是在判断语句里嵌套一个查询语句，例如要查询所有语文成绩并降序排序，可以通过联表查询和子查询两种方式实现</p>
+<p><img src="/2024/02/18/mysql/%E5%AD%90%E6%9F%A5%E8%AF%A2.png" alt="子查询"></p>
+<h3 id="2-4-聚合函数"><a href="#2-4-聚合函数" class="headerlink" title="2.4 聚合函数"></a>2.4 聚合函数</h3><h4 id="2-4-1-count"><a href="#2-4-1-count" class="headerlink" title="2.4.1 count"></a>2.4.1 count</h4><p>count 函数用于计数，例如查询有多少学生</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(`name`) <span class="keyword">from</span> students;</span><br></pre></td></tr></table></figure>
+
+<p>函数内所带的参数不同，背后运行也不同：</p>
+<ul>
+<li>count(字段)：会忽略空值，不计数</li>
+<li>count(*)：不会忽略空值</li>
+<li>count(1)：不会忽略空值</li>
+<li>从效率上看：如果查询的列为主键，那么 count(字段) 比 count(1) 快，不为主键则反之；如果表中只有一列，则 count(*) 最快</li>
+</ul>
+<h4 id="2-4-2-sum"><a href="#2-4-2-sum" class="headerlink" title="2.4.2 sum"></a>2.4.2 sum</h4><p>顾名思义，用于求和，例如查询所有成绩之和</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">sum</span>(`score`) <span class="keyword">as</span> <span class="string">&#x27;总分&#x27;</span> <span class="keyword">from</span> <span class="keyword">result</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-3-avg"><a href="#2-4-3-avg" class="headerlink" title="2.4.3 avg"></a>2.4.3 avg</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">avg</span>(`score`) <span class="keyword">as</span> <span class="string">&#x27;平均分&#x27;</span> <span class="keyword">from</span> <span class="keyword">result</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-4-max和min"><a href="#2-4-4-max和min" class="headerlink" title="2.4.4 max和min"></a>2.4.4 max和min</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">max</span>(`score`) <span class="keyword">as</span> <span class="string">&#x27;最高分&#x27;</span> <span class="keyword">from</span> <span class="keyword">result</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">min</span>(`score`) <span class="keyword">as</span> <span class="string">&#x27;最低分&#x27;</span> <span class="keyword">from</span> <span class="keyword">result</span></span><br></pre></td></tr></table></figure>
+
+<p>查询所有科目的平均分、最高分和最低分</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> subjectname, <span class="built_in">avg</span>(studentresult), <span class="built_in">max</span>(studentresult), <span class="built_in">min</span>(studentresult)</span><br><span class="line"><span class="keyword">from</span> `<span class="keyword">result</span>`</span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span> `subject`</span><br><span class="line"><span class="keyword">on</span> `<span class="keyword">result</span>`.subjectno <span class="operator">=</span> `subject`.subjectno</span><br><span class="line"><span class="comment">-- 定义字段进行分组</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> result.subjectno;</span><br></pre></td></tr></table></figure>
+
+<p>通过分组后的次要条件，查询平均分大于 80 分的科目</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> subjectname, <span class="built_in">avg</span>(studentresult) <span class="keyword">as</span> 平均分</span><br><span class="line"><span class="keyword">from</span> `<span class="keyword">result</span>`</span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span> `subject`</span><br><span class="line"><span class="keyword">on</span> `<span class="keyword">result</span>`.subjectno <span class="operator">=</span> `subject`.subjectno</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> `<span class="keyword">result</span>`.subjectno</span><br><span class="line"><span class="comment">-- 分组后的次要条件</span></span><br><span class="line"><span class="keyword">having</span> 平均分 <span class="operator">&gt;</span> <span class="number">80</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-5-MD5加密"><a href="#2-5-MD5加密" class="headerlink" title="2.5 MD5加密"></a>2.5 MD5加密</h3><p>在数据库中，密码等敏感信息都不会以明文的形式存储的，可以通过md5 进行加密</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 更新密码以达成加密</span></span><br><span class="line"><span class="keyword">update</span> students <span class="keyword">set</span> pwd<span class="operator">=</span>md5(pwd);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 插入的时候就进行加密</span></span><br><span class="line"><span class="keyword">insert into</span> students <span class="keyword">values</span>(<span class="number">1</span>, <span class="string">&#x27;cqm&#x27;</span>, md5(<span class="string">&#x27;12345&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-6-事务"><a href="#2-6-事务" class="headerlink" title="2.6 事务"></a>2.6 事务</h3><p>事务就是一系列 SQL 语句，要么全部执行，要么全部不执行。</p>
+<p>事务的特性（ACID）：</p>
+<ul>
+<li>原子性（Atomicity）：所有操作要么全部成功，要么全部失败</li>
+<li>一致性（Consistency）：事务的执行的前后数据的完整性保持一致</li>
+<li>隔离性（Isolation）：一个事务执行的过程中，不受到别的事务的干扰</li>
+<li>持久性（Durability）：事务一旦结束，就会持久到数据库</li>
+</ul>
+<p>隔离所导致的一些问题：</p>
+<ul>
+<li>脏读：一个事务读取到了另一个事务没提交的数据</li>
+<li>不可重复读：一个事务的多次查询结果不同，是因为查询期间数据被另一个事务提交而修改了</li>
+<li>虚读：一个事务A在进行修改数据的操作时，另一个事务B插入了新的一行数据，而对于事务A来看事务B添加的那行就没有做修改，就发生了虚读</li>
+</ul>
+<ol>
+<li>事务关闭自动提交</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> autocommit <span class="operator">=</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>事务开启</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">start</span> transaction;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>事务提交</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>事务回滚</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">rollback</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>事务结束</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> autocommit <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>保存点</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 添加保存点</span></span><br><span class="line"><span class="keyword">savepoint</span> 保存点名称</span><br><span class="line"><span class="comment">-- 回滚到保存点</span></span><br><span class="line"><span class="keyword">rollback</span> <span class="keyword">to</span> <span class="keyword">savepoint</span> 保存点名称</span><br><span class="line"><span class="comment">-- 删除保存点</span></span><br><span class="line"><span class="keyword">release</span> <span class="keyword">savepoint</span> 保存点名称</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-7-索引"><a href="#2-7-索引" class="headerlink" title="2.7 索引"></a>2.7 索引</h3><p>索引是帮助 MySQL 高效获取数据的数据结构。</p>
+<p><strong>索引的分类：</strong></p>
+<ul>
+<li>主键索引（primary key）：只有一列可以作为主键，且主键的值不可重复，一般用于用户ID之类的</li>
+<li>唯一索引（unique key）：唯一索引可以有多个，且值唯一</li>
+<li>常规索引（key）：例如一个表中的数据经常用到，就可以添加个常规索引</li>
+<li>全文索引（fulltext）：快速定位数据</li>
+</ul>
+<ol>
+<li>查看某个表的所有索引</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> index <span class="keyword">from</span> `table_name`;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>添加全文索引</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter table</span> `table_name` <span class="keyword">add</span> fulltext index `index_name`(`要添加索引的字段名`);</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>添加常规索引</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 这样会给表中某个字段的数据全部都添加上索引，在数据量大的时候可以提高查询效率</span></span><br><span class="line"><span class="keyword">create</span> index `id_table_name_字段名` <span class="keyword">on</span> `table_name`(<span class="string">&#x27;字段名&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>索引使用原则：</strong></p>
+<ul>
+<li>并不是索引越多越好</li>
+<li>不要对进程变动的数据添加索引</li>
+<li>数据量小的表不需要索引</li>
+<li>索引一般用于常查询的字段上</li>
+</ul>
+<h3 id="2-8-权限管理"><a href="#2-8-权限管理" class="headerlink" title="2.8 权限管理"></a>2.8 权限管理</h3><p>在 MySQL 中，用户表为 mysql.user，而权限管理其实都是在该表上操作。</p>
+<ol>
+<li>创建用户</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- host可以为以下的值</span></span><br><span class="line"><span class="comment">-- %:允许所有ip连接</span></span><br><span class="line"><span class="comment">-- localhost:只允许本地连接</span></span><br><span class="line"><span class="comment">-- 192.168.88.%:只允许给网段连接</span></span><br><span class="line"><span class="comment">-- 192.168.88.10:只允许该ip连接</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">&#x27;user_name&#x27;</span>@<span class="string">&#x27;host&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;user_password&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>修改当前用户密码</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> password <span class="operator">=</span> password(<span class="string">&#x27;new_password&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>修改指定用户密码</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> password <span class="keyword">for</span> user_name <span class="operator">=</span> password(<span class="string">&#x27;new_password&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>重命名</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rename <span class="keyword">user</span> user_name <span class="keyword">to</span> new_user_name;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>授权</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 权限:select、insert、delete等等，所有权限则为all</span></span><br><span class="line"><span class="keyword">grant</span> 权限 <span class="keyword">on</span> `db_name`.`table_name` <span class="keyword">to</span> <span class="string">&#x27;user_name&#x27;</span>@<span class="string">&#x27;host&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>授予某个用户部分权限</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">select</span>,<span class="keyword">insert</span> <span class="keyword">on</span> mysql.user <span class="keyword">to</span> <span class="string">&#x27;cqm&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>给某个用户授予全部数据库的权限</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 基本权限都有，但不会给grant权限</span></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> privileges <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;cqm&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li>删除用户</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> <span class="string">&#x27;user_name&#x27;</span>@<span class="string">&#x27;host&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li>取消权限</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">revoke</span> 权限 <span class="keyword">on</span> `db_name`.`table_name` <span class="keyword">from</span> <span class="string">&#x27;user_name&#x27;</span>@<span class="string">&#x27;host&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="10">
+<li>查询用户权限</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> grants <span class="keyword">for</span> <span class="string">&#x27;user_name&#x27;</span>@<span class="string">&#x27;host&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-9-备份"><a href="#2-9-备份" class="headerlink" title="2.9 备份"></a>2.9 备份</h3><p>备份文件都是以 <code>.sql</code> 为后缀的文件。</p>
+<ol>
+<li>导出</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">-d:要操作的数据库</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">-h:指定主机</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">-P:指定端口</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">--all-databases:操作所有数据库</span></span><br><span class="line">mysqldump -uroot -ppassword -d db1_name db2_name &gt; db_backup.sql</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>导入</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump -uroot -ppassword -d db_name &lt; db_backup.sql</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、MySQL配置"><a href="#三、MySQL配置" class="headerlink" title="三、MySQL配置"></a>三、MySQL配置</h2><h3 id="3-1-主从同步-复制"><a href="#3-1-主从同步-复制" class="headerlink" title="3.1 主从同步&#x2F;复制"></a>3.1 主从同步&#x2F;复制</h3><p>MySQL 主从同步即每当主数据库进行了数据的操作后，就会将操作写入 binlog 文件，从数据库会启动一个 IO 线程去监控主数据库的 binlog 文件，并将 binlog 文件的内容写入自己的 relaylog 文件中，同时会启动一个 SQL 线程去监控 relaylog 文件，如果发生变化就更新数据。</p>
+<p><img src="/2024/02/18/mysql/%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="主从同步流程图"></p>
+<p><strong>主从复制的类型：</strong></p>
+<ul>
+<li>statement模式（sbr）：只有修改数据的 SQL 语句会记录到 binlog 中，优点是减少了日志量，节省 IO，提高性能，不足是可能会导致主从节点之间的数据有差异。</li>
+<li>row模式（rbr）：仅记录被修改的数据，不怕无法正确复制的问题，但会产生大量的 binlog。</li>
+<li>mixed模式（mbr）：sbr 和 rbr 的混合模式，一般复制用 sbr，sbr 无法复制的用 rbr。</li>
+</ul>
+<p><strong>主从同步实现</strong></p>
+<ol>
+<li>docker-compose.yaml</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">mysql_master:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:5.7.35</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">--default-authentication-plugin=mysql_native_password</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">toortoor</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">3306</span><span class="string">:3306</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./master/my.cnf:/etc/mysql/my.cnf</span></span><br><span class="line">      </span><br><span class="line">  <span class="attr">mysql_slave:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:5.7.35</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">--default-authentication-plugin=mysql_native_password</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">toortoor</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">3307</span><span class="string">:3306</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./slave/my.cnf:/etc/mysql/my.cnf</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>master&#x2F;my.cnf</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">server-id = 1                   #节点ID，确保唯一</span><br><span class="line">log-bin = mysql-bin             #开启mysql的binlog日志功能</span><br><span class="line">sync_binlog = 1                 #控制数据库的binlog刷到磁盘上去，0不控制，性能最好；1每次事物提交都会刷到日志文件中，性能最差，最安全</span><br><span class="line">binlog_format = mixed           #binlog日志格式，mysql默认采用statement，建议使用mixed</span><br><span class="line">expire_logs_days = 7            #binlog过期清理时间</span><br><span class="line">max_binlog_size = 100m          #binlog每个日志文件大小</span><br><span class="line">binlog_cache_size = 4m          #binlog缓存大小</span><br><span class="line">max_binlog_cache_size= 512m     #最大binlog缓存大</span><br><span class="line">binlog-ignore-db=mysql          #不生成日志文件的数据库，多个忽略数据库可以用逗号拼接，或者复制这句话，写多行</span><br><span class="line">auto-increment-offset = 1       #自增值的偏移量</span><br><span class="line">auto-increment-increment = 1    #自增值的自增量</span><br><span class="line">slave-skip-errors = all         #跳过从库错误</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>slave&#x2F;my.cnf</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">server-id = 2</span><br><span class="line">log-bin=mysql-bin</span><br><span class="line">relay-log = mysql-relay-bin</span><br><span class="line">replicate-wild-ignore-table=mysql.%</span><br><span class="line">replicate-wild-ignore-table=test.%</span><br><span class="line">replicate-wild-ignore-table=information_schema.%</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>在 master 创建复制用户并授权</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">&#x27;repl_user&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;toortoor&#x27;</span>;</span><br><span class="line"><span class="keyword">grant</span> replication slave <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;repl_user&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;toortoor&#x27;</span>;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>查看 master 状态</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> master status;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+----------+...</span></span><br><span class="line"><span class="operator">|</span> File             <span class="operator">|</span> Position <span class="operator">|</span>...</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+----------+...</span></span><br><span class="line"><span class="operator">|</span> mysql<span class="operator">-</span>bin<span class="number">.000003</span> <span class="operator">|</span>      <span class="number">844</span> <span class="operator">|</span>...</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------+----------+...</span></span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>在从数据库配置</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">change master <span class="keyword">to</span></span><br><span class="line">MASTER_HOST <span class="operator">=</span> <span class="string">&#x27;172.19.0.3&#x27;</span>,</span><br><span class="line">MASTER_USER <span class="operator">=</span> <span class="string">&#x27;repl_user&#x27;</span>, </span><br><span class="line">MASTER_PASSWORD <span class="operator">=</span> <span class="string">&#x27;toortoor&#x27;</span>,</span><br><span class="line">MASTER_PORT <span class="operator">=</span> <span class="number">3306</span>,</span><br><span class="line">MASTER_LOG_FILE<span class="operator">=</span><span class="string">&#x27;mysql-bin.000003&#x27;</span>,</span><br><span class="line">MASTER_LOG_POS<span class="operator">=</span><span class="number">844</span>,</span><br><span class="line">MASTER_RETRY_COUNT <span class="operator">=</span> <span class="number">60</span>,</span><br><span class="line">MASTER_HEARTBEAT_PERIOD <span class="operator">=</span> <span class="number">10000</span>; </span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>启动从配置</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">start</span> slave;</span><br><span class="line"><span class="keyword">show</span> slave status\G;</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li>如果配置失败，可以执行</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">stop slave;</span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> sql_slave_skip_counter<span class="operator">=</span><span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-Mycat读写分离"><a href="#3-2-Mycat读写分离" class="headerlink" title="3.2 Mycat读写分离"></a>3.2 Mycat读写分离</h3><p>在一般项目中，对于数据库的操作读要远大于写，而如果所有的操作都放在一个节点上，那么就很容易出现压力过大而宕机，读写分离就可以很好解决该问题，主要通过 mycat 的中间件来实现。</p>
+<p><img src="/2024/02/18/mysql/mycat%E6%9E%B6%E6%9E%84.png" alt="mycat架构"></p>
+<p><strong>分库分表类型：</strong></p>
+<ul>
+<li>水平拆分：将不同等级的会员信息写到不同的表中</li>
+<li>垂直拆分：将买家信息、卖家信息、商品信息、支付信息等不同信息写到不同的表中</li>
+</ul>
+<p><strong>Mycat的主要文件：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">文件</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">server.xml</td>
+<td align="center">设置 Mycat 账号、参数等</td>
+</tr>
+<tr>
+<td align="center">schema.xml</td>
+<td align="center">设置 Mycat 对应的物理数据库和表等</td>
+</tr>
+<tr>
+<td align="center">rule.xml</td>
+<td align="center">分库分表设置</td>
+</tr>
+</tbody></table>
+<ol>
+<li>server.xml</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Mycat用户名 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">user</span> <span class="attr">name</span>=<span class="string">&quot;root&quot;</span> <span class="attr">defaultAccount</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">    			<span class="comment">&lt;!-- 密码 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>&gt;</span>123456<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    			<span class="comment">&lt;!-- 逻辑库名 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;schemas&quot;</span>&gt;</span>TESTDB<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    			<span class="comment">&lt;!-- 默认逻辑库 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;defaultSchema&quot;</span>&gt;</span>TESTDB<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--No MyCAT Database selected 错误前会尝试使用该schema作为schema，不设置则为null,报</span></span><br><span class="line"><span class="comment">错 --&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">&lt;!-- 表级 DML 权限设置 --&gt;</span></span><br><span class="line">    			<span class="comment">&lt;!-- 0为禁止，1为开启 --&gt;</span></span><br><span class="line">    			<span class="comment">&lt;!-- 按顺序分别为insert、update、select、delete --&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">                &lt;privileges check=&quot;false&quot;&gt;</span></span><br><span class="line"><span class="comment">                        &lt;schema name=&quot;TESTDB&quot; dml=&quot;0110&quot; &gt;</span></span><br><span class="line"><span class="comment">                                &lt;table name=&quot;tb01&quot; dml=&quot;0000&quot;&gt;&lt;/table&gt;</span></span><br><span class="line"><span class="comment">                                &lt;table name=&quot;tb02&quot; dml=&quot;1111&quot;&gt;&lt;/table&gt;</span></span><br><span class="line"><span class="comment">                        &lt;/schema&gt;</span></span><br><span class="line"><span class="comment">                &lt;/privileges&gt;</span></span><br><span class="line"><span class="comment">                 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!-- 其他用户设置 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">user</span> <span class="attr">name</span>=<span class="string">&quot;user&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>&gt;</span>user<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;schemas&quot;</span>&gt;</span>TESTDB<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;readOnly&quot;</span>&gt;</span>true<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;defaultSchema&quot;</span>&gt;</span>TESTDB<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>schema.xml</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mycat:schema</span> <span class="attr">xmlns:mycat</span>=<span class="string">&quot;http://io.mycat/&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- </span></span><br><span class="line"><span class="comment">			 name为逻辑库名称，与server.xml文件对应 </span></span><br><span class="line"><span class="comment">             checkSQLschema为true，sql为select * from table_name</span></span><br><span class="line"><span class="comment">			 checkSQLschema为false，sql为select * from TESTDB.table_name</span></span><br><span class="line"><span class="comment">			 sqlMaxLimit是指如果sql中没有limit，则自动添加，如果有则不添加</span></span><br><span class="line"><span class="comment">		--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">schema</span> <span class="attr">name</span>=<span class="string">&quot;TESTDB&quot;</span> <span class="attr">checkSQLschema</span>=<span class="string">&quot;true&quot;</span> <span class="attr">sqlMaxLimit</span>=<span class="string">&quot;100&quot;</span> <span class="attr">randomDataNode</span>=<span class="string">&quot;dn1&quot;</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- </span></span><br><span class="line"><span class="comment">					 name为逻辑表名</span></span><br><span class="line"><span class="comment">					 dataNode为数据节点名称</span></span><br><span class="line"><span class="comment">				     rule为规则</span></span><br><span class="line"><span class="comment">				--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">table</span> <span class="attr">name</span>=<span class="string">&quot;customer&quot;</span> <span class="attr">primaryKey</span>=<span class="string">&quot;id&quot;</span> <span class="attr">dataNode</span>=<span class="string">&quot;dn1,dn2&quot;</span> <span class="attr">rule</span>=<span class="string">&quot;sharding-by-intfile&quot;</span> <span class="attr">autoIncrement</span>=<span class="string">&quot;true&quot;</span> <span class="attr">fetchStoreNodeByJdbc</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">childTable</span> <span class="attr">name</span>=<span class="string">&quot;customer_addr&quot;</span> <span class="attr">primaryKey</span>=<span class="string">&quot;id&quot;</span> <span class="attr">joinKey</span>=<span class="string">&quot;customer_id&quot;</span> <span class="attr">parentKey</span>=<span class="string">&quot;id&quot;</span>&gt;</span> <span class="tag">&lt;/<span class="name">childTable</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">schema</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- </span></span><br><span class="line"><span class="comment">			 name为数据节点名称</span></span><br><span class="line"><span class="comment">			 dataHost为数据库地址</span></span><br><span class="line"><span class="comment">			 database为mysql中的database</span></span><br><span class="line"><span class="comment">			 实际就是将TESTDB逻辑库拆成dn1和dn2，而dn1和dn2又对应db1和db2</span></span><br><span class="line"><span class="comment">		--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dn1&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;localhost1&quot;</span> <span class="attr">database</span>=<span class="string">&quot;db1&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dn2&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;localhost1&quot;</span> <span class="attr">database</span>=<span class="string">&quot;db2&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dn3&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;localhost1&quot;</span> <span class="attr">database</span>=<span class="string">&quot;db3&quot;</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">			 balance:</span></span><br><span class="line"><span class="comment">				0:不开启读写分离，所有操作都在writeHost上</span></span><br><span class="line"><span class="comment">				1:所有读操作都随机发送到当前的writeHost对应的readHost和备用的writeHost</span></span><br><span class="line"><span class="comment">				2:所有读操作都随机发送到所有的主机上</span></span><br><span class="line"><span class="comment">				3:所有读操作只发送到readHost上</span></span><br><span class="line"><span class="comment">			 writeType:</span></span><br><span class="line"><span class="comment">				0:所有写操作都在第一台writeHost上，第一台挂了再切到第二台</span></span><br><span class="line"><span class="comment">				1:所有写操作都随机分配到writeHost</span></span><br><span class="line"><span class="comment">			 switchType: 用于是否允许writeHost和readHost之间自动切换</span></span><br><span class="line"><span class="comment">				-1:不允许</span></span><br><span class="line"><span class="comment">				1:允许</span></span><br><span class="line"><span class="comment">				2:基于mysql的主从同步的状态决定是否切换</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dataHost</span> <span class="attr">name</span>=<span class="string">&quot;localhost1&quot;</span> <span class="attr">maxCon</span>=<span class="string">&quot;1000&quot;</span> <span class="attr">minCon</span>=<span class="string">&quot;10&quot;</span> <span class="attr">balance</span>=<span class="string">&quot;0&quot;</span></span></span><br><span class="line"><span class="tag">                          <span class="attr">writeType</span>=<span class="string">&quot;0&quot;</span> <span class="attr">dbType</span>=<span class="string">&quot;mysql&quot;</span> <span class="attr">dbDriver</span>=<span class="string">&quot;jdbc&quot;</span> <span class="attr">switchType</span>=<span class="string">&quot;1&quot;</span>  <span class="attr">slaveThreshold</span>=<span class="string">&quot;100&quot;</span>&gt;</span></span><br><span class="line">            	<span class="comment">&lt;!-- 用此命令来进行心跳检测 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">heartbeat</span>&gt;</span>select user()<span class="tag">&lt;/<span class="name">heartbeat</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 设置读写分离 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">writeHost</span> <span class="attr">host</span>=<span class="string">&quot;hostM1&quot;</span> <span class="attr">url</span>=<span class="string">&quot;jdbc:mysql://localhost:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span></span></span><br><span class="line"><span class="tag">                                   <span class="attr">password</span>=<span class="string">&quot;root&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">readHost</span> <span class="attr">host</span>=<span class="string">&quot;hostS1&quot;</span> <span class="attr">url</span>=<span class="string">&quot;jdbc:mysql://localhost:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span></span></span><br><span class="line"><span class="tag">                                   <span class="attr">password</span>=<span class="string">&quot;root&quot;</span> /&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">readHost</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">writeHost</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dataHost</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mycat:schema</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>rule.xml</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 平均分算法 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">tableRule</span> <span class="attr">name</span>=<span class="string">&quot;mod-long&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rule</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 根据id值平均分 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">columns</span>&gt;</span>id<span class="tag">&lt;/<span class="name">columns</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">algorithm</span>&gt;</span>mod-long<span class="tag">&lt;/<span class="name">algorithm</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rule</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">tableRule</span>&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">function</span> <span class="attr">name</span>=<span class="string">&quot;mod-long&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.mycat.route.function.PartitionByMod&quot;</span>&gt;</span></span><br><span class="line">         <span class="comment">&lt;!-- 切片个数 --&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;count&quot;</span>&gt;</span>2<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">function</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>在 master 节点创建数据库</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 与schema.xml中的database参数相同</span></span><br><span class="line"><span class="keyword">create</span> database db1;</span><br><span class="line"><span class="keyword">create</span> database db2;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>在每个库里创建表</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> students(</span><br><span class="line">	id <span class="type">int</span>(<span class="number">4</span>),</span><br><span class="line">	name <span class="type">varchar</span>(<span class="number">10</span>),</span><br><span class="line">	<span class="keyword">primary key</span>(`id`)</span><br><span class="line">)engine<span class="operator">=</span>innodb <span class="keyword">default</span> charset<span class="operator">=</span>utf8;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>开启 Mycat，默认开启8066服务端端口和9066管理端端口</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./mycat start</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>在有安装 mysql 的主机登录 Mycat，也可以通过 navicat 连接</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -ptoortoor -h 192.168.88.136 -P 8066</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/02/18/mysql/mycat%E6%B5%8B%E8%AF%95%E4%B8%80.png" alt="mycat测试一"></p>
+<ol start="8">
+<li>只要在 Mycat 进行 SQL 操作，都会流到 mysql 集群中被处理，也可以看到已经实现了分库分表</li>
+</ol>
+<p><img src="/2024/02/18/mysql/mycat%E6%B5%8B%E8%AF%95%E4%BA%8C.png" alt="mycat测试二"></p>
+<h3 id="3-3-使用haproxy实现Mycat高可用"><a href="#3-3-使用haproxy实现Mycat高可用" class="headerlink" title="3.3 使用haproxy实现Mycat高可用"></a>3.3 使用haproxy实现Mycat高可用</h3><p>haproxy 可以实现 Mycat 集群的高可用和负载均衡，而 haproxy 的高可用通过 keepalived 来实现。</p>
+<p><img src="/2024/02/18/mysql/%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt="高可用集群架构图"></p>
+<ol>
+<li>安装 haproxy</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install haproxy</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>修改日志文件</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/rsyslog.conf</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Provides UDP syslog reception</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">ModLoad imudp</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">UDPServerRun 514</span></span><br><span class="line">systemctl restart rsyslog</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>配置 haproxy</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/haproxy/haproxy.cfg</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">haproxy的配置文件由两个部分构成，全局设定和代理设定</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">分为五段:global、defaults、frontend、backend、listen</span></span><br><span class="line">global</span><br><span class="line">    # 定义全局的syslog服务器</span><br><span class="line">    log         127.0.0.1 local2</span><br><span class="line">    chroot      /var/lib/haproxy</span><br><span class="line">    pidfile     /var/run/haproxy.pid</span><br><span class="line">    maxconn     4000</span><br><span class="line">    user        haproxy</span><br><span class="line">    group       haproxy</span><br><span class="line">    # 设置haproxy后台守护进程形式运行</span><br><span class="line">    daemon</span><br><span class="line">    stats socket /var/lib/haproxy/stats</span><br><span class="line">defaults</span><br><span class="line">    # 处理模式</span><br><span class="line">    # http:七层</span><br><span class="line">    # tcp:四层</span><br><span class="line">    # health:状态检查,只会返回OK</span><br><span class="line">    mode                    tcp</span><br><span class="line">    # 继承global中log的定义</span><br><span class="line">    log                     global</span><br><span class="line">    option                  tcplog</span><br><span class="line">    option                  dontlognull</span><br><span class="line">    option http-server-close</span><br><span class="line">    # option forwardfor       except 127.0.0.0/8</span><br><span class="line">    # serverId对应的服务器挂掉后,强制定向到其他健康的服务器</span><br><span class="line">    option                  redispatch</span><br><span class="line">    retries                 3</span><br><span class="line">    timeout http-request    10s</span><br><span class="line">    timeout queue           1m</span><br><span class="line">    timeout connect         10s</span><br><span class="line">    timeout client          1m</span><br><span class="line">    timeout server          1m</span><br><span class="line">    timeout http-keep-alive 10s</span><br><span class="line">    timeout check           10s</span><br><span class="line">    maxconn                 3000</span><br><span class="line">frontend  mycat</span><br><span class="line">    # 开启本地监控端口</span><br><span class="line">    bind             0.0.0.0:8066</span><br><span class="line">    bind             0.0.0.0:9066</span><br><span class="line">    mode             tcp</span><br><span class="line">    log              global</span><br><span class="line">    default_backend  mycat</span><br><span class="line">backend mycat</span><br><span class="line">    balance     roundrobin</span><br><span class="line">    # 监控的Mycat</span><br><span class="line">    server      mycat1 192.168.88.135:8066 check inter 5s rise 2 fall 3</span><br><span class="line">    server      mycat2 192.168.88.135:8066 check inter 5s rise 2 fall 3</span><br><span class="line">    server      mycatadmin1 192.168.88.136:9066 check inter 5s rise 2 fall 3</span><br><span class="line">    server      mycatadmin2 192.168.88.136:9066 check inter 5s rise 2 fall 3</span><br><span class="line">    listen      stats</span><br><span class="line">    mode        http</span><br><span class="line">    # 访问haproxy的端口</span><br><span class="line">    bind        0.0.0.0:9999</span><br><span class="line">    stats       enable</span><br><span class="line">    stats       hide-version</span><br><span class="line">    # url路径</span><br><span class="line">    stats uri   /haproxy</span><br><span class="line">    stats realm Haproxy\ Statistics</span><br><span class="line">    # 用户名/密码</span><br><span class="line">    stats auth  admin:admin</span><br><span class="line">    stats admin if TRUE</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>访问 haproxy</li>
+</ol>
+<p><img src="/2024/02/18/mysql/haproxy%E7%95%8C%E9%9D%A2.png" alt="haproxy界面"></p>
+<h3 id="3-4-使用keepalived实现去中心化"><a href="#3-4-使用keepalived实现去中心化" class="headerlink" title="3.4 使用keepalived实现去中心化"></a>3.4 使用keepalived实现去中心化</h3><ol>
+<li>安装 keepalived</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install keepalived</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>配置 Master 节点</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/keepalived/keepalived.conf</span><br><span class="line">! Configuration File for keepalived</span><br><span class="line"></span><br><span class="line">global_defs &#123;</span><br><span class="line">    # 识别节点的id</span><br><span class="line">    router_id haproxy01</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">    # 设置角色，由于抢占容易出现 VIP 切换而闪断带来的风险，所以该配置为不抢占模式</span><br><span class="line">    state BACKUP</span><br><span class="line">    # VIP所绑定的网卡</span><br><span class="line">    interface ens33</span><br><span class="line">    # 虚拟路由ID号，两个节点必须一样</span><br><span class="line">    virtual_router_id 30</span><br><span class="line">    # 权重</span><br><span class="line">    priority 100</span><br><span class="line">    # 开启不抢占</span><br><span class="line">    # nopreempt</span><br><span class="line">    # 组播信息发送间隔，两个节点必须一样</span><br><span class="line">    advert_int 1</span><br><span class="line">    # 设置验证信息</span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    &#125;</span><br><span class="line">    # VIP地址池，可以多个</span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        192.168.88.200</span><br><span class="line">    &#125;</span><br><span class="line">    # 将 track_script 块加入 instance 配置块</span><br><span class="line">    track_script&#123;</span><br><span class="line">        chk_haproxy</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">定义监控脚本</span></span><br><span class="line">vrrp_script chk_haproxy &#123;</span><br><span class="line">    script &quot;/etc/keepalived/haproxy_check.sh&quot;</span><br><span class="line">    # 时间间隔</span><br><span class="line">    interval 2</span><br><span class="line">    # 条件成立权重+2</span><br><span class="line">    weight 2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>配置 Slave 节点</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/keepalived/keepalived.conf</span><br><span class="line">! Configuration File for keepalived</span><br><span class="line"></span><br><span class="line">global_defs &#123;</span><br><span class="line">    router_id haproxy02</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface ens33</span><br><span class="line">    virtual_router_id 30</span><br><span class="line">    priority 80</span><br><span class="line">    # nopreempt</span><br><span class="line">    advert_int 1</span><br><span class="line">    authentication &#123;</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    &#125;</span><br><span class="line">    virtual_ipaddress &#123;</span><br><span class="line">        192.168.88.200</span><br><span class="line">    &#125;</span><br><span class="line">    track_script&#123;</span><br><span class="line">        chk_haproxy</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vrrp_script chk_haproxy &#123;</span><br><span class="line">    script &quot;/etc/keepalived/haproxy_check.sh&quot;</span><br><span class="line">    interval 2</span><br><span class="line">    weight 2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>编写监控脚本</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/keepalived/haproxy_check.sh</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">START_HAPROXY=&quot;systemctl start haproxy&quot;</span><br><span class="line">STOP_KEEPALIVED=&quot;systemctl stop keepalived&quot;</span><br><span class="line">LOG_DIR=&quot;/etc/keepalived/haproxy_check.log&quot;</span><br><span class="line">HAPS=`ps -C haproxy --no-header | wc -l`</span><br><span class="line"></span><br><span class="line">date &quot;+%F %H:%M:%S&quot; &gt; $LOG_DIR</span><br><span class="line">echo &quot;Check haproxy status&quot; &gt;&gt; $LOG_DIR</span><br><span class="line">if [ $HAPS -eq 0 ];</span><br><span class="line">then</span><br><span class="line">    echo &quot;Haproxy is down&quot; &gt;&gt; $LOG_DIR</span><br><span class="line">    echo &quot;Try to turn on Haproxy...&quot; &gt;&gt; $LOG_DIR</span><br><span class="line">    echo $START_HAPROXY | sh</span><br><span class="line">    sleep 3</span><br><span class="line">    if [ `ps -C haproxy --no-header | wc -l` -eq 0 ];</span><br><span class="line">    then</span><br><span class="line">        echo -e &quot;Start Haproxy failed, killall keepalived\n&quot; &gt;&gt; $LOG_DIR</span><br><span class="line">        echo $STOP_KEEPALIVED | sh</span><br><span class="line">    else</span><br><span class="line">        echo -e &quot;Start Haproxy successed\n&quot; &gt;&gt; $LOG_DIR</span><br><span class="line">    fi</span><br><span class="line">else</span><br><span class="line">    echo -e &quot;Haproxy is running\n&quot; &gt;&gt; $LOG_DIR</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>启动 keepalived 后可以看到 VIP 被哪台服务器抢占了，通过该 VIP 就可以访问到对应的 haproxy，haproxy 就会将流量流到后面的 Mycat，再由 Mycat 来实现分表分库；haproxy 停止后 keepalived 也会通过脚本尝试去重新开启，如果开启不成功就会停止 keepalived，VIP 就由 slave 节点抢占，用户依旧可以通过 VIP 来操控数据库，且无感知。</li>
+</ol>
+<p><img src="/2024/02/18/mysql/keepalived%E6%B5%8B%E8%AF%95%E4%B8%80.png" alt="keepalived测试一"></p>
+<ol start="6">
+<li>通过 VIP 去连接 Mycat 插入数据，尝试能否实现分库分表</li>
+</ol>
+<p><img src="/2024/02/18/mysql/keepalived%E6%B5%8B%E8%AF%95%E4%BA%8C.png" alt="keepalived测试二"></p>
+<p>可以看到插入的数据都分到了 db1、db2 中</p>
+<p><img src="/2024/02/18/mysql/keepalived%E6%B5%8B%E8%AF%95%E4%B8%89.png" alt="keepalived测试三"></p>
+<h3 id="3-5-Sharding-JDBC读写分离"><a href="#3-5-Sharding-JDBC读写分离" class="headerlink" title="3.5 Sharding JDBC读写分离"></a>3.5 Sharding JDBC读写分离</h3><p>Apache ShardingSphere 是一套开源的分布式数据库解决方案组成的生态圈，它由 JDBC、Proxy 和 Sidecar（规划中）这 3 款既能够独立部署，又支持混合部署配合使用的产品组成。 </p>
+<p>Sharding JDBC 同样也可以实现分库分表、数据分片、读写分离等功能，但与 Mycat 不同的是，Mycat 是一个独立的程序，而 Sharding JDBC 是以 jar 包的形式与应用程序融合在一起运行的。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>MySQL</p><p><a href="https://warnerchen.github.io/2024/02/18/mysql/">https://warnerchen.github.io/2024/02/18/mysql/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Warner Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2024-02-18</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2025-02-27</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/mysql/">mysql</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Buy me a coffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/02/18/prometheus/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Prometheus</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/02/18/redis/"><span class="level-item">Redis</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">Comments</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/NUX_Octodex.gif" alt="Warner Chen"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Warner Chen</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shenzhen, Guangdong, CN</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives/"><p class="title">59</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags/"><p class="title">24</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/warnerchen/" target="_blank" rel="me noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://wiki.sanxian.tech/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sanxian</span></span><span class="level-right"><span class="level-item tag">wiki.sanxian.tech</span></span></a></li></ul></div></div></div><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-27T04:30:01.000Z">2025-02-27</time></p><p class="title"><a href="/2025/02/27/Ollama-Open-WebUI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">Ollama + Open WebUI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-24T03:03:53.000Z">2025-02-24</time></p><p class="title"><a href="/2025/02/24/%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F/">使用代理获取镜像</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-19T14:10:44.000Z">2025-02-19</time></p><p class="title"><a href="/2025/02/19/SUSE-AI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">SUSE AI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-13T03:37:54.000Z">2025-02-13</time></p><p class="title"><a href="/2025/02/13/RKE2-Cilium-%E9%85%8D%E7%BD%AE-Cluster-Mesh-%E5%AE%9E%E7%8E%B0%E8%B7%A8%E9%9B%86%E7%BE%A4%E9%80%9A%E4%BF%A1/">RKE2 Cilium 配置 Cluster Mesh 实现跨集群通信</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-10T08:32:32.000Z">2025-02-10</time></p><p class="title"><a href="/2025/02/10/Rancher-Monitoring-V2-Prometheus-PVC-%E6%89%A9%E5%AE%B9/">Rancher Monitoring V2 Prometheus PVC 扩容</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/02/"><span class="level-start"><span class="level-item">February 2025</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/01/"><span class="level-start"><span class="level-item">January 2025</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/12/"><span class="level-start"><span class="level-item">December 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">November 2024</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">October 2024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/09/"><span class="level-start"><span class="level-item">September 2024</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">August 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/06/"><span class="level-start"><span class="level-item">June 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/03/"><span class="level-start"><span class="level-item">March 2024</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/02/"><span class="level-start"><span class="level-item">February 2024</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ai/"><span class="tag">ai</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ansible/"><span class="tag">ansible</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/calico/"><span class="tag">calico</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cisco/"><span class="tag">cisco</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/container/"><span class="tag">container</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/containerd/"><span class="tag">containerd</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elasticsearch/"><span class="tag">elasticsearch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elk/"><span class="tag">elk</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/etcd/"><span class="tag">etcd</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/istio/"><span class="tag">istio</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jenkins/"><span class="tag">jenkins</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/k8s/"><span class="tag">k8s</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kafka/"><span class="tag">kafka</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/mysql/"><span class="tag">mysql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nexus/"><span class="tag">nexus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/prometheus/"><span class="tag">prometheus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/suse/"><span class="tag">suse</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/web/"><span class="tag">web</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/zookeeper/"><span class="tag">zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/"><span class="tag">面试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A6%96%E9%A1%B5/"><span class="tag">首页</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a><p class="is-size-7"><span>&copy; 2025 Warner Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

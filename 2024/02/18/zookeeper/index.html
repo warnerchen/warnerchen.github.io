@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Zookeeper - Warner&#039;s Wiki</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Warner&#039;s Wiki"><meta name="msapplication-TileImage" content="/logo.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Warner&#039;s Wiki"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="ZooKeeper 是一个分布式的，开放源码的分布式应用程序协调服务，是 Hadoop 和 Hbase 的重要组件。它是一个为分布式应用提供一致性服务的软件，提供的功能包括：配置维护、域名服务、分布式同步、组服务等。"><meta property="og:type" content="blog"><meta property="og:title" content="Zookeeper"><meta property="og:url" content="https://warnerchen.github.io/2024/02/18/zookeeper/"><meta property="og:site_name" content="Warner&#039;s Wiki"><meta property="og:description" content="ZooKeeper 是一个分布式的，开放源码的分布式应用程序协调服务，是 Hadoop 和 Hbase 的重要组件。它是一个为分布式应用提供一致性服务的软件，提供的功能包括：配置维护、域名服务、分布式同步、组服务等。"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/zookeeper/logo.jpg"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/zookeeper/zk%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/zookeeper/%E6%8C%81%E4%B9%85%E4%B8%8E%E4%B8%B4%E6%97%B6%E8%8A%82%E7%82%B9.png"><meta property="og:image" content="https://warnerchen.github.io/2024/02/18/zookeeper/%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E5%8E%9F%E7%90%86.png"><meta property="article:published_time" content="2024-02-18T08:06:41.000Z"><meta property="article:modified_time" content="2025-02-26T23:37:00.000Z"><meta property="article:author" content="Warner Chen"><meta property="article:tag" content="zookeeper"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://warnerchen.github.io/2024/02/18/zookeeper/logo.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://warnerchen.github.io/2024/02/18/zookeeper/"},"headline":"Zookeeper","image":["https://warnerchen.github.io/2024/02/18/zookeeper/logo.jpg","https://warnerchen.github.io/2024/02/18/zookeeper/zk%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84.png","https://warnerchen.github.io/2024/02/18/zookeeper/%E6%8C%81%E4%B9%85%E4%B8%8E%E4%B8%B4%E6%97%B6%E8%8A%82%E7%82%B9.png","https://warnerchen.github.io/2024/02/18/zookeeper/%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E5%8E%9F%E7%90%86.png"],"datePublished":"2024-02-18T08:06:41.000Z","dateModified":"2025-02-26T23:37:00.000Z","author":{"@type":"Person","name":"Warner Chen"},"publisher":{"@type":"Organization","name":"Warner's Wiki","logo":{"@type":"ImageObject","url":"https://warnerchen.github.io/logo.jpg"}},"description":"ZooKeeper 是一个分布式的，开放源码的分布式应用程序协调服务，是 Hadoop 和 Hbase 的重要组件。它是一个为分布式应用提供一致性服务的软件，提供的功能包括：配置维护、域名服务、分布式同步、组服务等。"}</script><link rel="canonical" href="https://warnerchen.github.io/2024/02/18/zookeeper/"><link rel="icon" href="/logo.jpg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2024-02-18T08:06:41.000Z" title="18/02/2024, 4:06:41 pm">2024-02-18</time></span><span class="level-item">Updated&nbsp;<time dateTime="2025-02-26T23:37:00.000Z" title="27/02/2025, 7:37:00 am">2025-02-27</time></span><span class="level-item">18 minutes read (About 2755 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">Zookeeper</h1><div class="content"><p><img src="/2024/02/18/zookeeper/logo.jpg" alt="logo"></p>
+<p>ZooKeeper 是一个分布式的，开放源码的分布式应用程序协调服务，是 Hadoop 和 Hbase 的重要组件。它是一个为分布式应用提供一致性服务的软件，提供的功能包括：配置维护、域名服务、分布式同步、组服务等。</p>
+<span id="more"></span>
+
+<h2 id="一、Zookeeper基础"><a href="#一、Zookeeper基础" class="headerlink" title="一、Zookeeper基础"></a>一、Zookeeper基础</h2><h3 id="1-1-使用场景"><a href="#1-1-使用场景" class="headerlink" title="1.1 使用场景"></a>1.1 使用场景</h3><ul>
+<li>分布式协调组件：通过 watch 机制可以协调好节点之间的数据一致性</li>
+<li>分布式锁：通过分布式锁可以做到强一致性</li>
+<li>无状态化实现</li>
+<li>负载均衡</li>
+<li>数据发布&#x2F;订阅</li>
+<li>命名服务</li>
+</ul>
+<h3 id="1-2-部署"><a href="#1-2-部署" class="headerlink" title="1.2 部署"></a>1.2 部署</h3><p><strong>docker-compose.yaml</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">zookeeper:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zk01</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.7.0</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zk01</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2181</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zk01:2888:3888;2181</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>zoo.cfg</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">dataDir=/data</span><br><span class="line">dataLogDir=/datalog</span><br><span class="line"><span class="comment"># 基本时间配置（毫秒）</span></span><br><span class="line">tickTime=2000</span><br><span class="line"><span class="comment"># 初始化连接到leader的最大时长，单位为倍数，即初始化时间为tickTime * initLimit</span></span><br><span class="line">initLimit=5</span><br><span class="line"><span class="comment"># follower与leader数据同步的最大时长</span></span><br><span class="line">syncLimit=2</span><br><span class="line"><span class="comment"># 保存数据的快照数量</span></span><br><span class="line">autopurge.snapRetainCount=3</span><br><span class="line"><span class="comment"># 自动触发清除任务时间间隔，以小时为单位，默认为0，表不清除</span></span><br><span class="line">autopurge.purgeInterval=0</span><br><span class="line"><span class="comment"># 客户端与zk的最大并发连接数</span></span><br><span class="line">maxClientCnxns=60</span><br><span class="line"><span class="comment"># 开启standaloneEnabled模式，即独立部署</span></span><br><span class="line">standaloneEnabled=<span class="literal">true</span></span><br><span class="line"><span class="comment"># 开启adminServer</span></span><br><span class="line">admin.enableServer=<span class="literal">true</span></span><br><span class="line"><span class="comment"># 2181是为客户端提供的端口</span></span><br><span class="line">server.1=zk01:2888:3888;2181</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-基本命令"><a href="#1-3-基本命令" class="headerlink" title="1.3 基本命令"></a>1.3 基本命令</h3><ol>
+<li>启动|关闭|查看状态</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zkServer.sh start|stop|status</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>进入 zk</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zkCli.sh</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>查看内部数据结构</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls [path]</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="二、内部数据结构"><a href="#二、内部数据结构" class="headerlink" title="二、内部数据结构"></a>二、内部数据结构</h2><h3 id="2-1-是如何存储数据的"><a href="#2-1-是如何存储数据的" class="headerlink" title="2.1 是如何存储数据的"></a>2.1 是如何存储数据的</h3><p>Zookeeper 中的数据是保存在节点上的，即 znode，多个 znode 就构成一个树的结构。</p>
+<p><img src="/2024/02/18/zookeeper/zk%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84.png" alt="zk数据存储结构"></p>
+<p>如图，a 和 b 就是 Zookeeper 的 znode，创建 znode 方式如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create /[znode_name]</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建节点并创建一个数据</span></span><br><span class="line">create /[znode_name] [data_name]</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取数据</span></span><br><span class="line">get [znode_name]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-znode结构"><a href="#2-2-znode结构" class="headerlink" title="2.2 znode结构"></a>2.2 znode结构</h3><p>Zookeeper 中的 zonode，包含以下几个部分：</p>
+<ul>
+<li>data：保存数据</li>
+<li>acl：权限<ul>
+<li>c：创建权限</li>
+<li>w：写权限</li>
+<li>r：读权限</li>
+<li>d：删除权限</li>
+<li>a：admin 管理者权限</li>
+</ul>
+</li>
+<li>stat：描述当前 znode 的元数据</li>
+<li>child：当前节点的子节点</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看znode详细信息</span></span><br><span class="line">get -s /[znode_name]</span><br><span class="line">cZxid:创建节点的事务ID</span><br><span class="line">ctime:创建节点时间</span><br><span class="line">mZxid:修改节点的事务ID</span><br><span class="line">mtime:修改节点时间</span><br><span class="line">pZxid:添加和删除子节点的事务ID</span><br><span class="line">cversion:当前节点的子节点版本号，初始值为-1，每对该节点的子节点进行操作，这个cversion都会自动增加</span><br><span class="line">dataVersion:数据版本初识版本为0，每对该节点的数据进行操作，这个dataVersion都会自动增加</span><br><span class="line">aclVersion:权限版本</span><br><span class="line">ephemeralOwne:如果当前节点是临时节点，该值是当前节点的session id，如果不是临时节点则为0</span><br><span class="line">dataLength:数据长度</span><br><span class="line">numChildren:该节点的子节点个数</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-znode类型"><a href="#2-3-znode类型" class="headerlink" title="2.3 znode类型"></a>2.3 znode类型</h3><ul>
+<li>持久节点：在会话结束后仍会存在</li>
+<li>持久序号节点：根据先后顺序，会在结点之后带上一个数值，适用于分布式锁的场景（单调递增）</li>
+<li>临时节点：会话结束后会自动删除，适用于注册与服务发现的场景</li>
+<li>临时序号节点：跟持久序号节点相同，适用于分布式锁的场景</li>
+<li>容器节点：当容器节点中没有任何子节点时，该容器节点会被定期删除（60s）</li>
+<li>TTL 节点：可以指定节点的到期时间</li>
+</ul>
+<p><strong>持久序号节点创建</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -s /[znode_name]</span><br></pre></td></tr></table></figure>
+
+<p><strong>临时节点创建</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -e /[znode_name]</span><br></pre></td></tr></table></figure>
+
+<p><strong>临时序号节点创建</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -e -s /[znode_name]</span><br></pre></td></tr></table></figure>
+
+<p><strong>容器节点创建</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create -c /[znode_name]</span><br></pre></td></tr></table></figure>
+
+<p><strong>TTL 节点创建</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过系统配置开启</span></span><br><span class="line">zookeeper.extendedTypesEnabled=true</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/02/18/zookeeper/%E6%8C%81%E4%B9%85%E4%B8%8E%E4%B8%B4%E6%97%B6%E8%8A%82%E7%82%B9.png" alt="持久与临时节点"></p>
+<p><strong>持久节点</strong></p>
+<p>持久节点在创建后服务端会发送一个 <code>session id</code>，并一直保留着。</p>
+<p><strong>临时节点</strong></p>
+<p>临时节点在创建时后服务器也会发送一个 <code>session id</code>，在会话持续的过程中客户端会不断向服务端续约 <code>session id</code> 的时间，当客户端没有继续续约，而服务端内部的计时器到期时，就会将该 <code>session id</code> 所对应的 znode 全部删除。</p>
+<h3 id="2-4-持久化机制"><a href="#2-4-持久化机制" class="headerlink" title="2.4 持久化机制"></a>2.4 持久化机制</h3><p>Zookeeper 的数据是运行在内存中的，所以提供了两种持久化机制：</p>
+<ul>
+<li>事务日志：Zookeeper 将执行过的命令以日志的形式存储在 dataLogDir &#x2F; dataDir 中，类似于 redis 的 AOF</li>
+<li>数据快照：在一定时间间隔内做一次数据快照，存储在快照文件中（snapshot），类似于 redis 的RDB</li>
+</ul>
+<p>Zookeeper 通过这两种持久化机制，在恢复数据时先将快照文件中的数据恢复到内存中，再用日志文件中的数据做增量恢复，可以实现高效的持久化。</p>
+<h2 id="三、zkCli的使用"><a href="#三、zkCli的使用" class="headerlink" title="三、zkCli的使用"></a>三、zkCli的使用</h2><ol>
+<li>递归查询</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -R /[znode_name]</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>删除节点</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deleteall /[znode_name]</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>乐观锁删除</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete -v [version] /[znode_name]</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>给当前会话注册用户，并创建节点赋予该用户权限</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">addauth digest [user]:[password]</span><br><span class="line">create /[znode_name] auth:[user]:[password]:[privileges]</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="四、分布式锁"><a href="#四、分布式锁" class="headerlink" title="四、分布式锁"></a>四、分布式锁</h2><p>在分布式的环境下，如果在一个节点去上了个锁，当请求被负载均衡分配到了其它节点，那么锁就无法形成互斥，所以节点之间使用 Zookeeper，做一个协调中心，将锁上传到 Zookeeper，其它节点要用到就去 Zookeeper 拿这个锁，这就是分布式锁。</p>
+<p>Zookeeper 锁的分类：</p>
+<ul>
+<li>读锁：大家都可以读，前提是之前没有写锁。（读锁比喻成约会，大家都有机会和女神约会，约会前提是女神没结婚）</li>
+<li>写锁：只有写锁才能写，前提是不能有任何锁。（写锁比喻成结婚，结婚后只有老公能和女神约会，结婚前提是女神和其他人的关系断干净了）</li>
+</ul>
+<h3 id="4-1-上读锁"><a href="#4-1-上读锁" class="headerlink" title="4.1 上读锁"></a>4.1 上读锁</h3><ul>
+<li>创建一个临时序号节点，节点数据是 read，表示为读锁</li>
+<li>获取当前 Zookeeper 中序号比自己小的所有节点</li>
+<li>判断最小节点是否为读锁：<ul>
+<li>如果是读锁：则上锁失败，因为如果最小节点是读锁，那么后面就不可能有写锁，接着为最小节点设置监听，Zookeeper 的 watch 机制会在最小节点发生变化时通知当前节点，再进行后面的步骤，被称为阻塞等待</li>
+<li>如果不是读锁：则上锁成功</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-2-上写锁"><a href="#4-2-上写锁" class="headerlink" title="4.2 上写锁"></a>4.2 上写锁</h3><ul>
+<li>创建一个临时序号节点，节点数据是 write，表示为写锁</li>
+<li>获取 Zookeeper 中的所有节点</li>
+<li>判断自己是否为最小节点：<ul>
+<li>如果是：上锁成功</li>
+<li>如果不是：说明前面还有锁，所以上锁失败，接着监听最小节点，如果最小节点发生变化，则重新进行第二步</li>
+</ul>
+</li>
+</ul>
+<p><strong>羊群效应</strong></p>
+<p>假设有一百个请求都是要去写锁，那么就会有一百个请求去监听最小节点，那么 Zookeeper 的压力就会非常大，解决方法是将这一百个请求按请求顺序排列，后一个请求去监听前一个请求即可，实现链式监听。</p>
+<h3 id="4-3-watch机制"><a href="#4-3-watch机制" class="headerlink" title="4.3 watch机制"></a>4.3 watch机制</h3><p>Zookeeper 的 watch 可以看作是一个触发器，当监控的 znode 发生改变，就会触发 znode 上注册的对应事件，请求 watch 的客户端就会接收到异步通知。</p>
+<p><strong>zkCli.sh 中使用 watch</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">create /test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">一次性监听，监听节点内容</span></span><br><span class="line">get -w /test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">监听目录，但所监听节点下创建和删除子节点不会触发监听</span></span><br><span class="line">ls -w /test</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">与上面相对，都会触发监听</span></span><br><span class="line">ls -R -w /test</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="五、集群部署"><a href="#五、集群部署" class="headerlink" title="五、集群部署"></a>五、集群部署</h2><p>Zookeeper 的集群角色有三个：</p>
+<ul>
+<li>Leader：处理集群所有事务的请求，集群只有一个 Leader</li>
+<li>Follower：只处理读请求，参与 Leader 选举</li>
+<li>Observer：只处理读请求，提升集群的性能，但不能参与 Leader 选举</li>
+</ul>
+<p><strong>docker-compose.yaml</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">zk01:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zk01</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.7.0</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zk01</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2181</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">1</span></span><br><span class="line">      <span class="comment"># 2888:用于集群内zk之间的通信</span></span><br><span class="line">      <span class="comment"># 3888:用于选举投票</span></span><br><span class="line">      <span class="comment"># 2181:客户端使用</span></span><br><span class="line">      <span class="comment"># 要创建observer则在2181端口后加:observer</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zk01:2888:3888;2181</span> <span class="string">server.2=zk02:2888:3888;2181</span> <span class="string">server.3=zk03:2888:3888;2181</span></span><br><span class="line">    </span><br><span class="line">  <span class="attr">zk02:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zk02</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.7.0</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zk02</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2182</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">2</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zk01:2888:3888;2181</span> <span class="string">server.2=zk02:2888:3888;2181</span> <span class="string">server.3=zk03:2888:3888;2181</span></span><br><span class="line">      </span><br><span class="line">  <span class="attr">zk03:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zk03</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">zookeeper:3.7.0</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">zk03</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2183</span><span class="string">:2181</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ZOO_MY_ID:</span> <span class="number">3</span></span><br><span class="line">      <span class="attr">ZOO_SERVERS:</span> <span class="string">server.1=zk01:2888:3888;2181</span> <span class="string">server.2=zk02:2888:3888;2181</span> <span class="string">server.3=zk03:2888:3888;2181</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>通过命令查看节点角色</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zkServer.sh status</span><br><span class="line">Mode: leader</span><br></pre></td></tr></table></figure>
+
+<p><strong>连接集群</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zkCli.sh -server zk01:2181,zk02:2181,zk03:2181</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-1-ZAB协议"><a href="#5-1-ZAB协议" class="headerlink" title="5.1 ZAB协议"></a>5.1 ZAB协议</h3><p>ZAB（Zookeeper Atomic Broadcast）即 Zookeeper 原子广播协议，通过这个协议解决了集群数据一致性和崩溃恢复的问题。</p>
+<p><strong>ZAB 协议中节点的四种状态</strong></p>
+<ul>
+<li>Looking：选举状态</li>
+<li>Following</li>
+<li>Leading</li>
+<li>Observing</li>
+</ul>
+<p><strong>初始化集群时 leader 的选举</strong></p>
+<ul>
+<li>当集群中两台节点启动时，就会开始 leader 的选举，选票的格式为 <code>(myid,zXid)</code></li>
+<li>第一轮投票时，每个节点会生成自己的选票，即自己的 <code>(myid,zXid)</code>，然后将选票给到对方，这时候每个节点就会有两张选票，即自己的和对方节点的</li>
+<li>接着就会比较两张选票的 <code>zXid</code>，如果都相同就对比 <code>myid</code>，将大的一票投到投票箱中</li>
+<li>第二轮投票时，每个节点会将上一轮投出去的选票给到其它节点，然后再对比 <code>(myid,zXid)</code>，将大的一票投出去，就能够选出 leader</li>
+<li>后来新启动的节点会发现已经有 leader了，就不用做选举的过程了</li>
+<li>可以看出初始化集群时，leader 的选举主要看 <code>myid</code></li>
+</ul>
+<p><strong>崩溃恢复时的 leader 选举</strong></p>
+<p>在 leader 确定了之后，leader 会周期性地向 follower 发送心跳包，当 follower 没有收到 leader 发送过来的心跳包，就会进入选举过程，这时候集群不能对外提供服务。</p>
+<ul>
+<li>当 leader 挂了之后，follower 的状态会变成 looking</li>
+<li>接着就进行选举投票，过程和初始化集群时一样</li>
+</ul>
+<h3 id="5-2-主从同步原理"><a href="#5-2-主从同步原理" class="headerlink" title="5.2 主从同步原理"></a>5.2 主从同步原理</h3><p><img src="/2024/02/18/zookeeper/%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E5%8E%9F%E7%90%86.png" alt="主从同步原理"></p>
+<h3 id="5-3-NIO和BIO"><a href="#5-3-NIO和BIO" class="headerlink" title="5.3 NIO和BIO"></a>5.3 NIO和BIO</h3><p><strong>NIO</strong></p>
+<p>用于被客户端连接的 2181 端口，使用的就是 NIO 的连接模式；客户端开启 watch 时，使用的也是 NIO。</p>
+<p><strong>BIO</strong></p>
+<p>集群在进行选举时，多个节点之间的通信端口，使用的是 BIO 的连接模式。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Zookeeper</p><p><a href="https://warnerchen.github.io/2024/02/18/zookeeper/">https://warnerchen.github.io/2024/02/18/zookeeper/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Warner Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2024-02-18</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2025-02-27</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/zookeeper/">zookeeper</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Buy me a coffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/02/18/web/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Web</span></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">Comments</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/NUX_Octodex.gif" alt="Warner Chen"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Warner Chen</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shenzhen, Guangdong, CN</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives/"><p class="title">59</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags/"><p class="title">24</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/warnerchen/" target="_blank" rel="me noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://wiki.sanxian.tech/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">sanxian</span></span><span class="level-right"><span class="level-item tag">wiki.sanxian.tech</span></span></a></li></ul></div></div></div><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-27T04:30:01.000Z">2025-02-27</time></p><p class="title"><a href="/2025/02/27/Ollama-Open-WebUI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">Ollama + Open WebUI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-24T03:03:53.000Z">2025-02-24</time></p><p class="title"><a href="/2025/02/24/%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%90%86%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F/">使用代理获取镜像</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-19T14:10:44.000Z">2025-02-19</time></p><p class="title"><a href="/2025/02/19/SUSE-AI-%E4%BD%BF%E7%94%A8%E9%9A%8F%E8%AE%B0/">SUSE AI 使用随记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-13T03:37:54.000Z">2025-02-13</time></p><p class="title"><a href="/2025/02/13/RKE2-Cilium-%E9%85%8D%E7%BD%AE-Cluster-Mesh-%E5%AE%9E%E7%8E%B0%E8%B7%A8%E9%9B%86%E7%BE%A4%E9%80%9A%E4%BF%A1/">RKE2 Cilium 配置 Cluster Mesh 实现跨集群通信</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-02-10T08:32:32.000Z">2025-02-10</time></p><p class="title"><a href="/2025/02/10/Rancher-Monitoring-V2-Prometheus-PVC-%E6%89%A9%E5%AE%B9/">Rancher Monitoring V2 Prometheus PVC 扩容</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/02/"><span class="level-start"><span class="level-item">February 2025</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/01/"><span class="level-start"><span class="level-item">January 2025</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/12/"><span class="level-start"><span class="level-item">December 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">November 2024</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">October 2024</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/09/"><span class="level-start"><span class="level-item">September 2024</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">August 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/06/"><span class="level-start"><span class="level-item">June 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/03/"><span class="level-start"><span class="level-item">March 2024</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/02/"><span class="level-start"><span class="level-item">February 2024</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/ai/"><span class="tag">ai</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ansible/"><span class="tag">ansible</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/calico/"><span class="tag">calico</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cisco/"><span class="tag">cisco</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/container/"><span class="tag">container</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/containerd/"><span class="tag">containerd</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elasticsearch/"><span class="tag">elasticsearch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/elk/"><span class="tag">elk</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/etcd/"><span class="tag">etcd</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/istio/"><span class="tag">istio</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/jenkins/"><span class="tag">jenkins</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/k8s/"><span class="tag">k8s</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/kafka/"><span class="tag">kafka</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/mysql/"><span class="tag">mysql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/nexus/"><span class="tag">nexus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/prometheus/"><span class="tag">prometheus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/suse/"><span class="tag">suse</span><span class="tag">19</span></a></div><div class="control"><a class="tags has-addons" href="/tags/web/"><span class="tag">web</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/zookeeper/"><span class="tag">zookeeper</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/"><span class="tag">面试</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A6%96%E9%A1%B5/"><span class="tag">首页</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a><p class="is-size-7"><span>&copy; 2025 Warner Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
