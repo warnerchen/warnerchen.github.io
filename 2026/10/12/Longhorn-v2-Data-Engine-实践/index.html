@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Longhorn v2 Data Engine 实践 - Warner&#039;s Wiki</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Warner&#039;s Wiki"><meta name="msapplication-TileImage" content="/logo.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Warner&#039;s Wiki"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Longhorn 除了提供传统的 v1 Data Engine 外，还支持基于 SPDK（Storage Performance Development Kit）的 v2 Data Engine。v2 Data Engine 已在 Longhorn v1.12.0 版本中正式 GA（General Availability）。 v1 与 v2 Data Engine 的主要区别如下：    对比项"><meta property="og:type" content="blog"><meta property="og:title" content="Longhorn v2 Data Engine 实践"><meta property="og:url" content="https://warnerchen.github.io/2026/10/12/Longhorn-v2-Data-Engine-%E5%AE%9E%E8%B7%B5/"><meta property="og:site_name" content="Warner&#039;s Wiki"><meta property="og:description" content="Longhorn 除了提供传统的 v1 Data Engine 外，还支持基于 SPDK（Storage Performance Development Kit）的 v2 Data Engine。v2 Data Engine 已在 Longhorn v1.12.0 版本中正式 GA（General Availability）。 v1 与 v2 Data Engine 的主要区别如下：    对比项"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image1.png"><meta property="og:image" content="https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image2.png"><meta property="og:image" content="https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image3.png"><meta property="og:image" content="https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image4.png"><meta property="og:image" content="https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image5.png"><meta property="article:published_time" content="2026-10-12T02:48:24.000Z"><meta property="article:modified_time" content="2026-10-16T04:42:13.783Z"><meta property="article:author" content="Warner Chen"><meta property="article:tag" content="suse"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image1.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://warnerchen.github.io/2026/10/12/Longhorn-v2-Data-Engine-%E5%AE%9E%E8%B7%B5/"},"headline":"Longhorn v2 Data Engine 实践","image":["https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image1.png","https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image2.png","https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image3.png","https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image4.png","https://warnerchen.github.io/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image5.png"],"datePublished":"2026-10-12T02:48:24.000Z","dateModified":"2026-10-16T04:42:13.783Z","author":{"@type":"Person","name":"Warner Chen"},"publisher":{"@type":"Organization","name":"Warner's Wiki","logo":{"@type":"ImageObject","url":"https://warnerchen.github.io/logo.jpg"}},"description":"Longhorn 除了提供传统的 v1 Data Engine 外，还支持基于 SPDK（Storage Performance Development Kit）的 v2 Data Engine。v2 Data Engine 已在 Longhorn v1.12.0 版本中正式 GA（General Availability）。 v1 与 v2 Data Engine 的主要区别如下：    对比项"}</script><link rel="canonical" href="https://warnerchen.github.io/2026/10/12/Longhorn-v2-Data-Engine-%E5%AE%9E%E8%B7%B5/"><link rel="icon" href="/logo.jpg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/2024/02/18/About/">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2026-10-12T02:48:24.000Z" title="10/12/2026, 10:48:24 AM">2026-10-12</time></span><span class="level-item">Updated&nbsp;<time dateTime="2026-10-16T04:42:13.783Z" title="10/16/2026, 12:42:13 PM">2026-10-16</time></span><span class="level-item"><a class="link-muted" href="/categories/SUSE/">SUSE</a></span><span class="level-item">13 minutes read (About 1945 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">Longhorn v2 Data Engine 实践</h1><div class="content"><p>Longhorn 除了提供传统的 v1 Data Engine 外，还支持基于 SPDK（Storage Performance Development Kit）的 v2 Data Engine。v2 Data Engine 已在 Longhorn v1.12.0 版本中正式 GA（General Availability）。</p>
+<p>v1 与 v2 Data Engine 的主要区别如下：</p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>Data Engine v1</th>
+<th>Data Engine v2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据路径</td>
+<td>在 Instance Manager 中运行各 Volume 的 Engine 和 Replica 进程，通常通过 iSCSI 向主机提供块设备</td>
+<td>基于 SPDK，Replica 存储在原始块设备上的逻辑卷中，常规 <code>blockdev</code> 前端通过 NVMe&#x2F;TCP 向主机提供块设备</td>
+</tr>
+<tr>
+<td>节点磁盘</td>
+<td>使用 <code>filesystem</code> 类型的磁盘，需要先格式化为 ext4&#x2F;XFS 文件系统并挂载</td>
+<td>使用 <code>block</code> 类型的磁盘，由 Longhorn 直接管理未格式化的原始块设备，优先推荐本地 NVMe</td>
+</tr>
+<tr>
+<td>节点资源</td>
+<td>主要根据工作负载和 Replica 数量规划资源</td>
+<td>额外需要为 SPDK 分配内存和专用 CPU，默认预留 2 GiB HugePages</td>
+</tr>
+<tr>
+<td>快照删除</td>
+<td>删除 <code>volume-head</code> 的直接父快照后，可能先将其标记为移除，随后通过 Purge 操作清理</td>
+<td>支持在线合并，删除操作完成后快照即被移除</td>
+</tr>
+<tr>
+<td>功能差异</td>
+<td>支持 <code>strict-local</code> 数据本地性</td>
+<td>不支持 <code>strict-local</code>，但支持 v1 不具备的快速 Volume 克隆和 QoS</td>
+</tr>
+<tr>
+<td>RWO &#x2F; RWX</td>
+<td>RWO 使用块设备，普通 RWX 通过 Share Manager 提供 NFS 服务</td>
+<td>同样支持 RWO 和普通 RWX，RWX 仍然依赖 NFS Client</td>
+</tr>
+</tbody></table>
+<p>本文基于 Longhorn v2 Data Engine 进行实践。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="环境信息"><a href="#环境信息" class="headerlink" title="环境信息"></a>环境信息</h2><ul>
+<li>Longhorn：v1.12.1</li>
+<li>Kubernetes：RKE2 v1.35.8+rke2r1</li>
+<li>集群规模：3 个节点</li>
+<li>节点规格：每个节点 <code>8c16g</code></li>
+<li>节点 Kernel：6.8.0-138-generic</li>
+</ul>
+<hr>
+<h2 id="安装前准备"><a href="#安装前准备" class="headerlink" title="安装前准备"></a>安装前准备</h2><p>在所有节点安装依赖项：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt update</span><br><span class="line">apt install -y linux-modules-extra-`<span class="built_in">uname</span> -r`</span><br></pre></td></tr></table></figure>
+
+<p>加载所需的内核模块：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 临时加载内核模块</span></span><br><span class="line">modprobe vfio_pci</span><br><span class="line">modprobe uio_pci_generic</span><br><span class="line">modprobe nvme-tcp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置开机自动加载</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF &gt; /etc/modules-load.d/longhorn-v2-data-engine-modules.conf</span></span><br><span class="line"><span class="string">vfio_pci</span></span><br><span class="line"><span class="string">uio_pci_generic</span></span><br><span class="line"><span class="string">nvme_tcp</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<p>配置 HugePages：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改 /etc/default/grub，设置 GRUB_CMDLINE_LINUX=&quot;hugepagesz=2M hugepages=1024&quot;</span></span><br><span class="line">vim /etc/default/grub</span><br><span class="line">update-grub</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>longhornctl</code> 进行预检：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">longhornctl --kubeconfig ~/.kube/config \</span><br><span class="line">  --image harbor.warnerchen.com/rancher/mirrored-longhornio-longhorn-cli:v1.12.1 \</span><br><span class="line">  check preflight --enable-spdk</span><br></pre></td></tr></table></figure>
+
+<p>如果缺少依赖，也可以通过 <code>longhornctl</code> 自动安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">longhornctl --kubeconfig ~/.kube/config \</span><br><span class="line">  --image harbor.warnerchen.com/rancher/mirrored-longhornio-longhorn-cli:v1.12.1 \</span><br><span class="line">  install preflight --enable-spdk</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="开启-v2-Data-Engine"><a href="#开启-v2-Data-Engine" class="headerlink" title="开启 v2 Data Engine"></a>开启 v2 Data Engine</h2><p>本文在已有的 Longhorn 环境中启用 v2 Data Engine。</p>
+<p>准备 Helm Chart Values：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF &gt; longhorn-v2-data-engine-values.yaml</span></span><br><span class="line"><span class="string">global:</span></span><br><span class="line"><span class="string">  imageRegistry: &quot;harbor.warnerchen.com&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">image:</span></span><br><span class="line"><span class="string">  longhorn:</span></span><br><span class="line"><span class="string">    engine:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-longhorn-engine</span></span><br><span class="line"><span class="string">    manager:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-longhorn-manager</span></span><br><span class="line"><span class="string">    ui:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-longhorn-ui</span></span><br><span class="line"><span class="string">    instanceManager:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-longhorn-instance-manager</span></span><br><span class="line"><span class="string">    shareManager:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-longhorn-share-manager</span></span><br><span class="line"><span class="string">    backingImageManager:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-backing-image-manager</span></span><br><span class="line"><span class="string">    supportBundleKit:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-support-bundle-kit</span></span><br><span class="line"><span class="string">  csi:</span></span><br><span class="line"><span class="string">    attacher:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-csi-attacher</span></span><br><span class="line"><span class="string">    provisioner:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-csi-provisioner</span></span><br><span class="line"><span class="string">    nodeDriverRegistrar:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-csi-node-driver-registrar</span></span><br><span class="line"><span class="string">    resizer:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-csi-resizer</span></span><br><span class="line"><span class="string">    snapshotter:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-csi-snapshotter</span></span><br><span class="line"><span class="string">    livenessProbe:</span></span><br><span class="line"><span class="string">      repository: rancher/mirrored-longhornio-livenessprobe</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">service:</span></span><br><span class="line"><span class="string">  ui:</span></span><br><span class="line"><span class="string">    type: NodePort</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">persistence:</span></span><br><span class="line"><span class="string">  # 后续测试手动创建用途明确的 StorageClass</span></span><br><span class="line"><span class="string">  createStorageClass: false</span></span><br><span class="line"><span class="string">  dataEngine: v1</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">defaultSettings:</span></span><br><span class="line"><span class="string">  # 同时启用 v1 和 v2 Data Engine</span></span><br><span class="line"><span class="string">  v1DataEngine: true</span></span><br><span class="line"><span class="string">  v2DataEngine: true</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  # 不自动创建 /var/lib/longhorn 类型的默认磁盘，后续手动添加磁盘</span></span><br><span class="line"><span class="string">  createDefaultDiskLabeledNodes: true</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<p>更新 Longhorn：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">helm upgrade --install longhorn longhorn/longhorn \</span><br><span class="line">  --namespace longhorn-system \</span><br><span class="line">  --version 1.12.1 \</span><br><span class="line">  -f longhorn-v2-data-engine-values.yaml</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image1.png"></p>
+<hr>
+<h2 id="常用功能"><a href="#常用功能" class="headerlink" title="常用功能"></a>常用功能</h2><h3 id="添加原始块设备"><a href="#添加原始块设备" class="headerlink" title="添加原始块设备"></a>添加原始块设备</h3><p>首先，在存储节点上检查磁盘是否存在文件系统或分区表签名：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wipefs -n /dev/sdx</span><br></pre></td></tr></table></figure>
+
+<p>如果存在相关签名，需要清除磁盘上的签名信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wipefs -a /dev/sdx</span><br></pre></td></tr></table></figure>
+
+<p>Longhorn v2 Data Engine 要求使用未格式化的原始块设备。如果磁盘上仍存在文件系统或分区表签名，Longhorn 将拒绝将其添加为 v2 磁盘。</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>执行 <code>wipefs -a /dev/sdx</code> 前，必须确认设备身份，并确保磁盘上的数据可以被清除。</p>
+<p>不要对该磁盘执行 <code>mkfs.ext4</code>，也不要将其挂载到 <code>/var/lib/longhorn</code>。</p>
+</blockquote>
+<p>通过 Longhorn UI 添加 <code>Block</code> 类型的磁盘：</p>
+<p><img src="/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image2.png"></p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>磁盘 Path 建议使用 BDF（例如 <code>0000:05:00.0</code>），或者 <code>/dev/disk/by-id/...</code> 下的稳定设备路径。</p>
+<p>如果使用 VMware 虚拟机进行测试，还需要为虚拟机添加 <code>disk.EnableUUID=TRUE</code> 参数，以确保能够找到对应的 <code>/dev/disk/by-id/</code> 设备路径。</p>
+</blockquote>
+<hr>
+<h3 id="创建-v2-StorageClass-并验证-RWO-Volume"><a href="#创建-v2-StorageClass-并验证-RWO-Volume" class="headerlink" title="创建 v2 StorageClass 并验证 RWO Volume"></a>创建 v2 StorageClass 并验证 RWO Volume</h3><p>创建使用 v2 Data Engine 的 StorageClass：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | kubectl apply -f -</span></span><br><span class="line"><span class="string">apiVersion: storage.k8s.io/v1</span></span><br><span class="line"><span class="string">kind: StorageClass</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: longhorn-v2-ssd</span></span><br><span class="line"><span class="string">provisioner: driver.longhorn.io</span></span><br><span class="line"><span class="string">allowVolumeExpansion: true</span></span><br><span class="line"><span class="string">reclaimPolicy: Retain</span></span><br><span class="line"><span class="string">volumeBindingMode: Immediate</span></span><br><span class="line"><span class="string">parameters:</span></span><br><span class="line"><span class="string">  dataEngine: &quot;v2&quot;</span></span><br><span class="line"><span class="string">  numberOfReplicas: &quot;3&quot;</span></span><br><span class="line"><span class="string">  diskSelector: &quot;ssd&quot;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<p>创建 PVC 和 Workload：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | kubectl apply -f -</span></span><br><span class="line"><span class="string">apiVersion: v1</span></span><br><span class="line"><span class="string">kind: PersistentVolumeClaim</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: app-rwo-pvc</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  accessModes:</span></span><br><span class="line"><span class="string">    - ReadWriteOnce</span></span><br><span class="line"><span class="string">  storageClassName: longhorn-v2-ssd</span></span><br><span class="line"><span class="string">  resources:</span></span><br><span class="line"><span class="string">    requests:</span></span><br><span class="line"><span class="string">      storage: 10Gi</span></span><br><span class="line"><span class="string">---</span></span><br><span class="line"><span class="string">apiVersion: apps/v1</span></span><br><span class="line"><span class="string">kind: Deployment</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: app-rwo</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  replicas: 1</span></span><br><span class="line"><span class="string">  selector:</span></span><br><span class="line"><span class="string">    matchLabels:</span></span><br><span class="line"><span class="string">      app: app-rwo</span></span><br><span class="line"><span class="string">  template:</span></span><br><span class="line"><span class="string">    metadata:</span></span><br><span class="line"><span class="string">      labels:</span></span><br><span class="line"><span class="string">        app: app-rwo</span></span><br><span class="line"><span class="string">    spec:</span></span><br><span class="line"><span class="string">      containers:</span></span><br><span class="line"><span class="string">        - name: nginx</span></span><br><span class="line"><span class="string">          image: harbor.warnerchen.com/library/nginx:mainline</span></span><br><span class="line"><span class="string">          volumeMounts:</span></span><br><span class="line"><span class="string">            - name: data</span></span><br><span class="line"><span class="string">              mountPath: /data</span></span><br><span class="line"><span class="string">      volumes:</span></span><br><span class="line"><span class="string">        - name: data</span></span><br><span class="line"><span class="string">          persistentVolumeClaim:</span></span><br><span class="line"><span class="string">            claimName: app-rwo-pvc</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<p>通过 Longhorn UI 查看 Volume 状态：</p>
+<p><img src="/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image3.png"></p>
+<p><img src="/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image4.png"></p>
+<hr>
+<h3 id="验证-v2-RWX-Volume"><a href="#验证-v2-RWX-Volume" class="headerlink" title="验证 v2 RWX Volume"></a>验证 v2 RWX Volume</h3><p>创建 PVC 和 Workload：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | kubectl apply -f -</span></span><br><span class="line"><span class="string">apiVersion: v1</span></span><br><span class="line"><span class="string">kind: PersistentVolumeClaim</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: app-rwx-pvc</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  accessModes:</span></span><br><span class="line"><span class="string">    - ReadWriteMany</span></span><br><span class="line"><span class="string">  volumeMode: Filesystem</span></span><br><span class="line"><span class="string">  storageClassName: longhorn-v2-ssd</span></span><br><span class="line"><span class="string">  resources:</span></span><br><span class="line"><span class="string">    requests:</span></span><br><span class="line"><span class="string">      storage: 10Gi</span></span><br><span class="line"><span class="string">---</span></span><br><span class="line"><span class="string">apiVersion: apps/v1</span></span><br><span class="line"><span class="string">kind: Deployment</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: app-rwx</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  replicas: 3</span></span><br><span class="line"><span class="string">  selector:</span></span><br><span class="line"><span class="string">    matchLabels:</span></span><br><span class="line"><span class="string">      app: app-rwx</span></span><br><span class="line"><span class="string">  template:</span></span><br><span class="line"><span class="string">    metadata:</span></span><br><span class="line"><span class="string">      labels:</span></span><br><span class="line"><span class="string">        app: app-rwx</span></span><br><span class="line"><span class="string">    spec:</span></span><br><span class="line"><span class="string">      containers:</span></span><br><span class="line"><span class="string">        - name: nginx</span></span><br><span class="line"><span class="string">          image: harbor.warnerchen.com/library/nginx:mainline</span></span><br><span class="line"><span class="string">          volumeMounts:</span></span><br><span class="line"><span class="string">            - name: shared-data</span></span><br><span class="line"><span class="string">              mountPath: /data</span></span><br><span class="line"><span class="string">      volumes:</span></span><br><span class="line"><span class="string">        - name: shared-data</span></span><br><span class="line"><span class="string">          persistentVolumeClaim:</span></span><br><span class="line"><span class="string">            claimName: app-rwx-pvc</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<p>通过 Longhorn UI 查看 Volume 状态：</p>
+<p><img src="/2026/07/16/AI-%E4%B8%AD%E7%9A%84-Token/Data-Engine-%E5%AE%9E%E8%B7%B5/image5.png"></p>
+<hr>
+<h2 id="v1-与-v2-Data-Engine-性能对比"><a href="#v1-与-v2-Data-Engine-性能对比" class="headerlink" title="v1 与 v2 Data Engine 性能对比"></a>v1 与 v2 Data Engine 性能对比</h2><h3 id="RWO-Volume-性能测试"><a href="#RWO-Volume-性能测试" class="headerlink" title="RWO Volume 性能测试"></a>RWO Volume 性能测试</h3><p>为了对比 v1 和 v2 Data Engine 在 RWO 场景下的性能，采用以下测试方法：</p>
+<ul>
+<li>分别使用 <code>longhorn-v1-ssd</code> 和 <code>longhorn-v2-ssd</code> 创建容量及 Replica 数量相同的专用测试 PVC，容量均为 10 GiB。</li>
+<li>选择容量、型号及负载一致的 v1 文件系统磁盘和 v2 原始块设备。</li>
+<li>将两个 PVC 挂载到同一个包含 fio 的测试 Workload 中，依次执行性能测试。</li>
+</ul>
+<p>创建 PVC 和 Workload：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 两个 PVC 均为 10 GiB，配置 3 个 Replica</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | kubectl apply -f -</span></span><br><span class="line"><span class="string">apiVersion: v1</span></span><br><span class="line"><span class="string">kind: PersistentVolumeClaim</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: v1-rwo-pvc</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  accessModes:</span></span><br><span class="line"><span class="string">    - ReadWriteOnce</span></span><br><span class="line"><span class="string">  storageClassName: longhorn-v1-ssd</span></span><br><span class="line"><span class="string">  resources:</span></span><br><span class="line"><span class="string">    requests:</span></span><br><span class="line"><span class="string">      storage: 10Gi</span></span><br><span class="line"><span class="string">---</span></span><br><span class="line"><span class="string">apiVersion: v1</span></span><br><span class="line"><span class="string">kind: PersistentVolumeClaim</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: v2-rwo-pvc</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  accessModes:</span></span><br><span class="line"><span class="string">    - ReadWriteOnce</span></span><br><span class="line"><span class="string">  storageClassName: longhorn-v2-ssd</span></span><br><span class="line"><span class="string">  resources:</span></span><br><span class="line"><span class="string">    requests:</span></span><br><span class="line"><span class="string">      storage: 10Gi</span></span><br><span class="line"><span class="string">---</span></span><br><span class="line"><span class="string">apiVersion: apps/v1</span></span><br><span class="line"><span class="string">kind: Deployment</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: fio</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  replicas: 1</span></span><br><span class="line"><span class="string">  selector:</span></span><br><span class="line"><span class="string">    matchLabels:</span></span><br><span class="line"><span class="string">      app: fio</span></span><br><span class="line"><span class="string">  template:</span></span><br><span class="line"><span class="string">    metadata:</span></span><br><span class="line"><span class="string">      labels:</span></span><br><span class="line"><span class="string">        app: fio</span></span><br><span class="line"><span class="string">    spec:</span></span><br><span class="line"><span class="string">      containers:</span></span><br><span class="line"><span class="string">        - name: fio</span></span><br><span class="line"><span class="string">          image: xridge/fio</span></span><br><span class="line"><span class="string">          command:</span></span><br><span class="line"><span class="string">            - sh</span></span><br><span class="line"><span class="string">            - -c</span></span><br><span class="line"><span class="string">            - sleep 360000</span></span><br><span class="line"><span class="string">          volumeMounts:</span></span><br><span class="line"><span class="string">            - name: v1-rwo-pvc</span></span><br><span class="line"><span class="string">              mountPath: /data/v1</span></span><br><span class="line"><span class="string">            - name: v2-rwo-pvc</span></span><br><span class="line"><span class="string">              mountPath: /data/v2</span></span><br><span class="line"><span class="string">      volumes:</span></span><br><span class="line"><span class="string">        - name: v1-rwo-pvc</span></span><br><span class="line"><span class="string">          persistentVolumeClaim:</span></span><br><span class="line"><span class="string">            claimName: v1-rwo-pvc</span></span><br><span class="line"><span class="string">        - name: v2-rwo-pvc</span></span><br><span class="line"><span class="string">          persistentVolumeClaim:</span></span><br><span class="line"><span class="string">            claimName: v2-rwo-pvc</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<p>在同一个 Pod 中，依次对挂载在 <code>/data/v1</code> 和 <code>/data/v2</code> 的 RWO Volume 进行性能测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试 4 KiB 随机混合读写，读占 70%，写占 30%</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试 v1 Data Engine</span></span><br><span class="line">kubectl <span class="built_in">exec</span> &lt;fio_pod_name&gt; -- fio \</span><br><span class="line">  --name=rwo-randrw \</span><br><span class="line">  --filename=/data/v1/fio-rwo.dat \</span><br><span class="line">  --size=2G \</span><br><span class="line">  --rw=randrw --rwmixread=70 --bs=4k \</span><br><span class="line">  --ioengine=libaio --direct=1 --iodepth=32 --numjobs=1 \</span><br><span class="line">  --ramp_time=15 --runtime=120 --time_based \</span><br><span class="line">  --group_reporting</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试 v2 Data Engine</span></span><br><span class="line">kubectl <span class="built_in">exec</span> &lt;fio_pod_name&gt; -- fio \</span><br><span class="line">  --name=rwo-randrw \</span><br><span class="line">  --filename=/data/v2/fio-rwo.dat \</span><br><span class="line">  --size=2G \</span><br><span class="line">  --rw=randrw --rwmixread=70 --bs=4k \</span><br><span class="line">  --ioengine=libaio --direct=1 --iodepth=32 --numjobs=1 \</span><br><span class="line">  --ramp_time=15 --runtime=120 --time_based \</span><br><span class="line">  --group_reporting</span><br></pre></td></tr></table></figure>
+
+<p><strong>三轮测试的 IOPS 和带宽结果如下：</strong></p>
+<table>
+<thead>
+<tr>
+<th>轮次</th>
+<th>Data Engine</th>
+<th align="right">读 IOPS</th>
+<th align="right">写 IOPS</th>
+<th align="right">总 IOPS</th>
+<th align="right">总带宽</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>v1</td>
+<td align="right">3,688</td>
+<td align="right">1,582</td>
+<td align="right">5,270</td>
+<td align="right">20.59 MiB&#x2F;s</td>
+</tr>
+<tr>
+<td>1</td>
+<td>v2</td>
+<td align="right">6,557</td>
+<td align="right">2,814</td>
+<td align="right">9,371</td>
+<td align="right">36.61 MiB&#x2F;s</td>
+</tr>
+<tr>
+<td>2</td>
+<td>v1</td>
+<td align="right">3,847</td>
+<td align="right">1,651</td>
+<td align="right">5,498</td>
+<td align="right">21.48 MiB&#x2F;s</td>
+</tr>
+<tr>
+<td>2</td>
+<td>v2</td>
+<td align="right">6,962</td>
+<td align="right">2,988</td>
+<td align="right">9,950</td>
+<td align="right">38.87 MiB&#x2F;s</td>
+</tr>
+<tr>
+<td>3</td>
+<td>v1</td>
+<td align="right">3,679</td>
+<td align="right">1,578</td>
+<td align="right">5,257</td>
+<td align="right">20.54 MiB&#x2F;s</td>
+</tr>
+<tr>
+<td>3</td>
+<td>v2</td>
+<td align="right">6,523</td>
+<td align="right">2,799</td>
+<td align="right">9,322</td>
+<td align="right">36.41 MiB&#x2F;s</td>
+</tr>
+<tr>
+<td><strong>三轮均值</strong></td>
+<td><strong>v1</strong></td>
+<td align="right"><strong>3,738</strong></td>
+<td align="right"><strong>1,604</strong></td>
+<td align="right"><strong>5,342</strong></td>
+<td align="right"><strong>20.87 MiB&#x2F;s</strong></td>
+</tr>
+<tr>
+<td><strong>三轮均值</strong></td>
+<td><strong>v2</strong></td>
+<td align="right"><strong>6,681</strong></td>
+<td align="right"><strong>2,867</strong></td>
+<td align="right"><strong>9,548</strong></td>
+<td align="right"><strong>37.30 MiB&#x2F;s</strong></td>
+</tr>
+</tbody></table>
+<p>从测试结果来看，v2 Data Engine 在 IOPS 和带宽方面均明显优于 v1 Data Engine。</p>
+<p><strong>三轮测试的延迟结果如下（单位：ms）：</strong></p>
+<table>
+<thead>
+<tr>
+<th>轮次</th>
+<th>Data Engine</th>
+<th align="right">读平均延迟</th>
+<th align="right">写平均延迟</th>
+<th align="right">读 P99 延迟</th>
+<th align="right">写 P99 延迟</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>v1</td>
+<td align="right">5.95</td>
+<td align="right">6.03</td>
+<td align="right">13.30</td>
+<td align="right">12.26</td>
+</tr>
+<tr>
+<td>1</td>
+<td>v2</td>
+<td align="right">3.32</td>
+<td align="right">3.50</td>
+<td align="right">8.98</td>
+<td align="right">6.19</td>
+</tr>
+<tr>
+<td>2</td>
+<td>v1</td>
+<td align="right">5.55</td>
+<td align="right">6.11</td>
+<td align="right">11.73</td>
+<td align="right">12.52</td>
+</tr>
+<tr>
+<td>2</td>
+<td>v2</td>
+<td align="right">2.97</td>
+<td align="right">3.66</td>
+<td align="right">5.21</td>
+<td align="right">6.13</td>
+</tr>
+<tr>
+<td>3</td>
+<td>v1</td>
+<td align="right">5.97</td>
+<td align="right">6.04</td>
+<td align="right">13.70</td>
+<td align="right">12.78</td>
+</tr>
+<tr>
+<td>3</td>
+<td>v2</td>
+<td align="right">3.39</td>
+<td align="right">3.41</td>
+<td align="right">9.50</td>
+<td align="right">5.87</td>
+</tr>
+<tr>
+<td><strong>三轮均值</strong></td>
+<td><strong>v1</strong></td>
+<td align="right"><strong>5.83</strong></td>
+<td align="right"><strong>6.06</strong></td>
+<td align="right"><strong>12.91</strong></td>
+<td align="right"><strong>12.52</strong></td>
+</tr>
+<tr>
+<td><strong>三轮均值</strong></td>
+<td><strong>v2</strong></td>
+<td align="right"><strong>3.23</strong></td>
+<td align="right"><strong>3.52</strong></td>
+<td align="right"><strong>7.90</strong></td>
+<td align="right"><strong>6.06</strong></td>
+</tr>
+</tbody></table>
+<p>从测试结果来看，v2 Data Engine 的平均延迟和 P99 延迟均低于 v1 Data Engine。</p>
+<hr>
+<h3 id="RWX-Volume-性能测试"><a href="#RWX-Volume-性能测试" class="headerlink" title="RWX Volume 性能测试"></a>RWX Volume 性能测试</h3><p>创建 PVC 和 Workload：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 两个 PVC 均为 10 GiB，配置 3 个 Replica</span></span><br><span class="line"><span class="built_in">cat</span> &lt;&lt;<span class="string">EOF | kubectl apply -f -</span></span><br><span class="line"><span class="string">apiVersion: v1</span></span><br><span class="line"><span class="string">kind: PersistentVolumeClaim</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: v1-rwx-pvc</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  accessModes:</span></span><br><span class="line"><span class="string">    - ReadWriteMany</span></span><br><span class="line"><span class="string">  storageClassName: longhorn-v1-ssd</span></span><br><span class="line"><span class="string">  resources:</span></span><br><span class="line"><span class="string">    requests:</span></span><br><span class="line"><span class="string">      storage: 10Gi</span></span><br><span class="line"><span class="string">---</span></span><br><span class="line"><span class="string">apiVersion: v1</span></span><br><span class="line"><span class="string">kind: PersistentVolumeClaim</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: v2-rwx-pvc</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  accessModes:</span></span><br><span class="line"><span class="string">    - ReadWriteMany</span></span><br><span class="line"><span class="string">  storageClassName: longhorn-v2-ssd</span></span><br><span class="line"><span class="string">  resources:</span></span><br><span class="line"><span class="string">    requests:</span></span><br><span class="line"><span class="string">      storage: 10Gi</span></span><br><span class="line"><span class="string">---</span></span><br><span class="line"><span class="string">apiVersion: apps/v1</span></span><br><span class="line"><span class="string">kind: Deployment</span></span><br><span class="line"><span class="string">metadata:</span></span><br><span class="line"><span class="string">  name: fio</span></span><br><span class="line"><span class="string">  namespace: default</span></span><br><span class="line"><span class="string">spec:</span></span><br><span class="line"><span class="string">  replicas: 3</span></span><br><span class="line"><span class="string">  selector:</span></span><br><span class="line"><span class="string">    matchLabels:</span></span><br><span class="line"><span class="string">      app: fio</span></span><br><span class="line"><span class="string">  template:</span></span><br><span class="line"><span class="string">    metadata:</span></span><br><span class="line"><span class="string">      labels:</span></span><br><span class="line"><span class="string">        app: fio</span></span><br><span class="line"><span class="string">    spec:</span></span><br><span class="line"><span class="string">      containers:</span></span><br><span class="line"><span class="string">        - name: fio</span></span><br><span class="line"><span class="string">          image: xridge/fio</span></span><br><span class="line"><span class="string">          command:</span></span><br><span class="line"><span class="string">            - sh</span></span><br><span class="line"><span class="string">            - -c</span></span><br><span class="line"><span class="string">            - sleep 360000</span></span><br><span class="line"><span class="string">          volumeMounts:</span></span><br><span class="line"><span class="string">            - name: v1-rwx-pvc</span></span><br><span class="line"><span class="string">              mountPath: /data/v1</span></span><br><span class="line"><span class="string">            - name: v2-rwx-pvc</span></span><br><span class="line"><span class="string">              mountPath: /data/v2</span></span><br><span class="line"><span class="string">      volumes:</span></span><br><span class="line"><span class="string">        - name: v1-rwx-pvc</span></span><br><span class="line"><span class="string">          persistentVolumeClaim:</span></span><br><span class="line"><span class="string">            claimName: v1-rwx-pvc</span></span><br><span class="line"><span class="string">        - name: v2-rwx-pvc</span></span><br><span class="line"><span class="string">          persistentVolumeClaim:</span></span><br><span class="line"><span class="string">            claimName: v2-rwx-pvc</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+
+<p>同时在三个 Pod 中执行性能测试，并将测试结果输出为独立文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">POD=&lt;fio_pod_name&gt;</span><br><span class="line">ENGINE=v1</span><br><span class="line">FILE=<span class="string">&quot;/data/<span class="variable">$ENGINE</span>/01-rwx-<span class="variable">$POD</span>.dat&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 准备测试文件</span></span><br><span class="line">kubectl <span class="built_in">exec</span> <span class="string">&quot;<span class="variable">$POD</span>&quot;</span> -- fio \</span><br><span class="line">  --name=prepare --filename=<span class="string">&quot;<span class="variable">$FILE</span>&quot;</span> --rw=write --bs=1M \</span><br><span class="line">  --ioengine=psync --direct=1 --size=1G --end_fsync=1 \</span><br><span class="line">  --output-format=json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行性能测试</span></span><br><span class="line">kubectl <span class="built_in">exec</span> <span class="string">&quot;<span class="variable">$POD</span>&quot;</span> -- fio \</span><br><span class="line">  --name=rwx-randrw --filename=<span class="string">&quot;<span class="variable">$FILE</span>&quot;</span> \</span><br><span class="line">  --rw=randrw --rwmixread=70 --bs=4k \</span><br><span class="line">  --ioengine=psync --iodepth=1 --numjobs=1 --direct=1 \</span><br><span class="line">  --size=1G --time_based --ramp_time=30 --runtime=120 \</span><br><span class="line">  --output-format=json</span><br></pre></td></tr></table></figure>
+
+<p>根据 Share Manager 与 fio Pod 所在节点的位置关系，分别测试以下四种场景：</p>
+<ul>
+<li>v1 的 Share Manager 位于本机，v2 的 Share Manager 位于远端。</li>
+<li>v1 的 Share Manager 位于远端，v2 的 Share Manager 位于本机。</li>
+<li>v1 和 v2 的 Share Manager 均位于远端。</li>
+<li>v1 和 v2 的 Share Manager 均位于本机。</li>
+</ul>
+<p>每个场景执行四轮测试，并交替调整 v1 和 v2 的测试顺序：</p>
+<ul>
+<li>第一轮和第三轮：先测试 v1，再测试 v2。</li>
+<li>第二轮和第四轮：先测试 v2，再测试 v1。</li>
+</ul>
+<blockquote>
+<p><strong>说明：</strong></p>
+<p>本机表示 fio Pod 与对应的 Share Manager 运行在同一个节点上，远端则表示两者运行在不同节点上。</p>
+<p>表格中的总 IOPS 为对应 fio Pod 四轮测试结果的平均值。</p>
+</blockquote>
+<hr>
+<h4 id="场景一：v1-本机，v2-远端"><a href="#场景一：v1-本机，v2-远端" class="headerlink" title="场景一：v1 本机，v2 远端"></a>场景一：v1 本机，v2 远端</h4><table>
+<thead>
+<tr>
+<th align="right">v1 总 IOPS</th>
+<th align="right">v2 总 IOPS</th>
+<th align="right">v2 四轮差异</th>
+<th align="right">v2 后两轮差异</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">410.7</td>
+<td align="right">405.6</td>
+<td align="right">-1.3%</td>
+<td align="right">-0.2%</td>
+</tr>
+</tbody></table>
+<p><strong>结论：</strong> 在该场景下，v1 的性能略优于 v2，但两者差异较小。</p>
+<hr>
+<h4 id="场景二：v1-远端，v2-本机"><a href="#场景二：v1-远端，v2-本机" class="headerlink" title="场景二：v1 远端，v2 本机"></a>场景二：v1 远端，v2 本机</h4><table>
+<thead>
+<tr>
+<th align="right">v1 总 IOPS</th>
+<th align="right">v2 总 IOPS</th>
+<th align="right">v2 四轮差异</th>
+<th align="right">v2 后两轮差异</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">337.9</td>
+<td align="right">492.9</td>
+<td align="right">+45.9%</td>
+<td align="right">+44.7%</td>
+</tr>
+</tbody></table>
+<p><strong>结论：</strong> 在该场景下，v2 的性能明显优于 v1。</p>
+<hr>
+<h4 id="场景三：两个-Share-Manager-均位于远端"><a href="#场景三：两个-Share-Manager-均位于远端" class="headerlink" title="场景三：两个 Share Manager 均位于远端"></a>场景三：两个 Share Manager 均位于远端</h4><table>
+<thead>
+<tr>
+<th align="right">v1 总 IOPS</th>
+<th align="right">v2 总 IOPS</th>
+<th align="right">v2 四轮差异</th>
+<th align="right">v2 后两轮差异</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">379.8</td>
+<td align="right">450.3</td>
+<td align="right">+18.6%</td>
+<td align="right">+11.8%</td>
+</tr>
+</tbody></table>
+<p><strong>结论：</strong> 在该场景下，v2 的性能优于 v1。</p>
+<hr>
+<h4 id="场景四：两个-Share-Manager-均位于本机"><a href="#场景四：两个-Share-Manager-均位于本机" class="headerlink" title="场景四：两个 Share Manager 均位于本机"></a>场景四：两个 Share Manager 均位于本机</h4><table>
+<thead>
+<tr>
+<th align="right">v1 总 IOPS</th>
+<th align="right">v2 总 IOPS</th>
+<th align="right">v2 四轮差异</th>
+<th align="right">v2 后两轮差异</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">450.5</td>
+<td align="right">530.3</td>
+<td align="right">+17.7%</td>
+<td align="right">+15.5%</td>
+</tr>
+</tbody></table>
+<p><strong>结论：</strong> 在该场景下，v2 的性能优于 v1。</p>
+<hr>
+<h3 id="测试结论"><a href="#测试结论" class="headerlink" title="测试结论"></a>测试结论</h3><ul>
+<li><strong>RWO Volume：</strong> v2 Data Engine 的性能优势较为明显。在测试中，v2 的 IOPS 和带宽均高于 v1，同时平均延迟和 P99 延迟也更低。</li>
+<li><strong>RWX Volume：</strong> v2 Data Engine 整体上也具有一定的性能优势，但测试结果受到 Share Manager 所在节点位置的显著影响。</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Longhorn v2 Data Engine 实践</p><p><a href="https://warnerchen.github.io/2026/10/12/Longhorn-v2-Data-Engine-实践/">https://warnerchen.github.io/2026/10/12/Longhorn-v2-Data-Engine-实践/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Warner Chen</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2026-10-12</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2026-10-16</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/suse/">suse</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/10/10/NeuVector-%E8%8E%B7%E5%8F%96%E8%A7%A6%E5%8F%91-SQL-Injection-%E5%91%8A%E8%AD%A6%E7%9A%84-SQL-%E8%AF%AD%E5%8F%A5/"><span class="level-item">NeuVector 获取触发 SQL Injection 告警的 SQL 语句</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="https://octodex.github.com/images/universetocat.png" alt="Warner Chen"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Warner Chen</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Shenzhen, Guangdong, CN</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives/"><p class="title">146</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories/"><p class="title">11</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags/"><p class="title">11</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/warnerchen/" target="_blank" rel="me noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#环境信息"><span class="level-left"><span class="level-item">环境信息</span></span></a></li><li><a class="level is-mobile" href="#安装前准备"><span class="level-left"><span class="level-item">安装前准备</span></span></a></li><li><a class="level is-mobile" href="#开启-v2-Data-Engine"><span class="level-left"><span class="level-item">开启 v2 Data Engine</span></span></a></li><li><a class="level is-mobile" href="#常用功能"><span class="level-left"><span class="level-item">常用功能</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#添加原始块设备"><span class="level-left"><span class="level-item">添加原始块设备</span></span></a></li><li><a class="level is-mobile" href="#创建-v2-StorageClass-并验证-RWO-Volume"><span class="level-left"><span class="level-item">创建 v2 StorageClass 并验证 RWO Volume</span></span></a></li><li><a class="level is-mobile" href="#验证-v2-RWX-Volume"><span class="level-left"><span class="level-item">验证 v2 RWX Volume</span></span></a></li></ul></li><li><a class="level is-mobile" href="#v1-与-v2-Data-Engine-性能对比"><span class="level-left"><span class="level-item">v1 与 v2 Data Engine 性能对比</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#RWO-Volume-性能测试"><span class="level-left"><span class="level-item">RWO Volume 性能测试</span></span></a></li><li><a class="level is-mobile" href="#RWX-Volume-性能测试"><span class="level-left"><span class="level-item">RWX Volume 性能测试</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#场景一：v1-本机，v2-远端"><span class="level-left"><span class="level-item">场景一：v1 本机，v2 远端</span></span></a></li><li><a class="level is-mobile" href="#场景二：v1-远端，v2-本机"><span class="level-left"><span class="level-item">场景二：v1 远端，v2 本机</span></span></a></li><li><a class="level is-mobile" href="#场景三：两个-Share-Manager-均位于远端"><span class="level-left"><span class="level-item">场景三：两个 Share Manager 均位于远端</span></span></a></li><li><a class="level is-mobile" href="#场景四：两个-Share-Manager-均位于本机"><span class="level-left"><span class="level-item">场景四：两个 Share Manager 均位于本机</span></span></a></li></ul></li><li><a class="level is-mobile" href="#测试结论"><span class="level-left"><span class="level-item">测试结论</span></span></a></li></ul></li></ul></div></div><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://www.zerchin.com/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Zerchin Xie</span></span><span class="level-right"><span class="level-item tag">www.zerchin.com</span></span></a></li><li><a class="level is-mobile" href="https://blog.ivanwz.com/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">lvan Wang</span></span><span class="level-right"><span class="level-item tag">blog.ivanwz.com</span></span></a></li><li><a class="level is-mobile" href="https://hackmd.io/@7vxmAdNPTmmlYGSRMuvbmw" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Andy Wu</span></span><span class="level-right"><span class="level-item tag">hackmd.io</span></span></a></li><li><a class="level is-mobile" href="https://www.xtplayer.cn/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Xiaolu Hong</span></span><span class="level-right"><span class="level-item tag">www.xtplayer.cn</span></span></a></li><li><a class="level is-mobile" href="https://kingsd.top/" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hailong Wang</span></span><span class="level-right"><span class="level-item tag">kingsd.top</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/categories/About/"><span class="level-start"><span class="level-item">About</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Cloud-Native/"><span class="level-start"><span class="level-item">Cloud Native</span></span><span class="level-end"><span class="level-item tag">39</span></span></a></li><li><a class="level is-mobile" href="/categories/Coding/"><span class="level-start"><span class="level-item">Coding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Google/"><span class="level-start"><span class="level-item">Google</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">12</span></span></a></li><li><a class="level is-mobile" href="/categories/Network/"><span class="level-start"><span class="level-item">Network</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Others/"><span class="level-start"><span class="level-item">Others</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/RedHat/"><span class="level-start"><span class="level-item">RedHat</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/SUSE/"><span class="level-start"><span class="level-item">SUSE</span></span><span class="level-end"><span class="level-item tag">74</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9D%A2%E8%AF%95/"><span class="level-start"><span class="level-item">面试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/about/"><span class="tag">about</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai/"><span class="tag">ai</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cloud-native/"><span class="tag">cloud native</span><span class="tag">39</span></a></div><div class="control"><a class="tags has-addons" href="/tags/coding/"><span class="tag">coding</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/google/"><span class="tag">google</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/linux/"><span class="tag">linux</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/network/"><span class="tag">network</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/others/"><span class="tag">others</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redhat/"><span class="tag">redhat</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/suse/"><span class="tag">suse</span><span class="tag">74</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9D%A2%E8%AF%95/"><span class="tag">面试</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-10-12T02:48:24.000Z">2026-10-12</time></p><p class="title"><a href="/2026/10/12/Longhorn-v2-Data-Engine-%E5%AE%9E%E8%B7%B5/">Longhorn v2 Data Engine 实践</a></p><p class="categories"><a href="/categories/SUSE/">SUSE</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-10-10T07:00:24.000Z">2026-10-10</time></p><p class="title"><a href="/2026/10/10/NeuVector-%E8%8E%B7%E5%8F%96%E8%A7%A6%E5%8F%91-SQL-Injection-%E5%91%8A%E8%AD%A6%E7%9A%84-SQL-%E8%AF%AD%E5%8F%A5/">NeuVector 获取触发 SQL Injection 告警的 SQL 语句</a></p><p class="categories"><a href="/categories/SUSE/">SUSE</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-09-29T07:09:23.000Z">2026-09-29</time></p><p class="title"><a href="/2026/09/29/Rancher-Monitoring-Kubernetes-Dashboard-%E6%98%BE%E7%A4%BA-No-Data-%E6%8E%92%E6%9F%A5%E8%AE%B0%E5%BD%95/">Rancher Monitoring Kubernetes Dashboard 显示 No Data 排查记录</a></p><p class="categories"><a href="/categories/SUSE/">SUSE</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-09-20T13:40:57.000Z">2026-09-20</time></p><p class="title"><a href="/2026/09/20/Longhorn-v1-Data-Engine-%E4%BD%BF%E7%94%A8%E5%AE%9E%E8%B7%B5/">Longhorn v1 Data Engine 使用实践</a></p><p class="categories"><a href="/categories/SUSE/">SUSE</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-09-16T06:49:32.000Z">2026-09-16</time></p><p class="title"><a href="/2026/09/16/RKE2-Cilium-kubeProxyReplacement-NodeLocalDNS-LRP-%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">RKE2 + Cilium + kubeProxyReplacement + NodeLocalDNS + LRP 使用注意事项</a></p><p class="categories"><a href="/categories/SUSE/">SUSE</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2026/10/"><span class="level-start"><span class="level-item">October 2026</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2026/09/"><span class="level-start"><span class="level-item">September 2026</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2026/08/"><span class="level-start"><span class="level-item">August 2026</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2026/07/"><span class="level-start"><span class="level-item">July 2026</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2026/06/"><span class="level-start"><span class="level-item">June 2026</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2026/05/"><span class="level-start"><span class="level-item">May 2026</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2026/04/"><span class="level-start"><span class="level-item">April 2026</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2026/03/"><span class="level-start"><span class="level-item">March 2026</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2026/02/"><span class="level-start"><span class="level-item">February 2026</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2026/01/"><span class="level-start"><span class="level-item">January 2026</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/12/"><span class="level-start"><span class="level-item">December 2025</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/11/"><span class="level-start"><span class="level-item">November 2025</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/10/"><span class="level-start"><span class="level-item">October 2025</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/09/"><span class="level-start"><span class="level-item">September 2025</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/08/"><span class="level-start"><span class="level-item">August 2025</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/07/"><span class="level-start"><span class="level-item">July 2025</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/06/"><span class="level-start"><span class="level-item">June 2025</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/05/"><span class="level-start"><span class="level-item">May 2025</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/04/"><span class="level-start"><span class="level-item">April 2025</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/03/"><span class="level-start"><span class="level-item">March 2025</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/02/"><span class="level-start"><span class="level-item">February 2025</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/01/"><span class="level-start"><span class="level-item">January 2025</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/12/"><span class="level-start"><span class="level-item">December 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/11/"><span class="level-start"><span class="level-item">November 2024</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/10/"><span class="level-start"><span class="level-item">October 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/09/"><span class="level-start"><span class="level-item">September 2024</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">August 2024</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/06/"><span class="level-start"><span class="level-item">June 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/03/"><span class="level-start"><span class="level-item">March 2024</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/02/"><span class="level-start"><span class="level-item">February 2024</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/logo.jpg" alt="Warner&#039;s Wiki" height="28"></a><p class="is-size-7"><span>&copy; 2026 Warner Chen</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/warnerchen/"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
